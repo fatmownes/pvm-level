@@ -1,14 +1,16 @@
-package com.pvmlevel;
+package com.pvmlevel.panel;
 
+<<<<<<< Updated upstream:src/main/java/com/pvmlevel/TopThreePanelParent.java
+=======
+import com.pvmlevel.PlayerManager;
+import net.runelite.client.game.SpriteManager;
+>>>>>>> Stashed changes:src/main/java/com/pvmlevel/panel/TopThreePanelParent.java
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 
 public class TopThreePanelParent extends PluginPanel
 {
