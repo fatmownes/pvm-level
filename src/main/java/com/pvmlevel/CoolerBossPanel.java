@@ -1,23 +1,36 @@
 package com.pvmlevel;
 
+import net.runelite.api.gameval.SpriteID;
+import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
+import net.runelite.client.util.ImageUtil;
+import net.runelite.client.util.QuantityFormatter;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.text.NumberFormat;
+import java.util.Locale;
 
-import static com.pvmlevel.BossPanel.getKcLabel;
 
 public class CoolerBossPanel extends PluginPanel {
 
-    CoolerBossPanel(HiscoreSkill hiscoreSkill, Integer kc)
+    CoolerBossPanel(SpriteManager spriteManager, HiscoreSkill hiscoreSkill, Integer kc)
     {
-        setBackground(ColorScheme.DARK_GRAY_COLOR);
+        setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+        // Move border to the panel
+        setBorder(new CompoundBorder(
+                BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(58, 58, 58)),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+
+        // Make panel fill its parent's width
+        setAlignmentX(Component.CENTER_ALIGNMENT);
 
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
@@ -27,14 +40,30 @@ public class CoolerBossPanel extends PluginPanel {
         JLabel boss = new JLabel(bossName);
         boss.setFont(FontManager.getRunescapeBoldFont());
         boss.setForeground(Color.GRAY);
-        JLabel kcLabel = getKcLabel(kc);
 
-        boss.setBorder(new CompoundBorder(
-                BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(58, 58, 58)),
-                BorderFactory.createEmptyBorder(0, 0, 10, 0)));
+        String kcFormatted = QuantityFormatter.quantityToStackSize(kc);
+        JLabel kcLabel = new JLabel(StringUtils.capitalize(kcFormatted));
+
+        kcLabel.setForeground(Color.YELLOW);
+
+        kcLabel.setFont(FontManager.getRunescapeFont());
+        kcLabel.setToolTipText(NumberFormat.getNumberInstance(Locale.US).format(kc));
+        kcLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JLabel spriteLabel = new JLabel();
+
+        spriteManager.getSpriteAsync(hiscoreSkill == null ? SpriteID.SideIcons.COMBAT : hiscoreSkill.getSpriteId(), 0,
+                (sprite) ->
+                SwingUtilities.invokeLater(() ->
+                {
+                    final BufferedImage scaledSprite = ImageUtil.
+                            resizeImage(ImageUtil.resizeCanvas(sprite, 25, 25), 20, 20);
+                    spriteLabel.setIcon(new ImageIcon(scaledSprite));
+                }));
 
         layout.setVerticalGroup(layout.createParallelGroup()
                 .addGroup(layout.createSequentialGroup()
+                        .addComponent(spriteLabel)
                         .addComponent(boss)
                         .addComponent(kcLabel)
                 )
@@ -42,13 +71,14 @@ public class CoolerBossPanel extends PluginPanel {
         );
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addGap(8)
-                .addGroup(layout.createParallelGroup()
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE) // flexible left gap
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                        .addComponent(spriteLabel)
                         .addComponent(boss)
                         .addComponent(kcLabel)
                 )
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE) // flexible left gap
         );
-
     }
 
 }

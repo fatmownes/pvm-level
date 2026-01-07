@@ -1,5 +1,6 @@
 package com.pvmlevel;
 
+import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
@@ -13,7 +14,7 @@ import java.awt.*;
 public class TopThreePanelParent extends PluginPanel
 {
 
-    TopThreePanelParent(PlayerManager.PlayerStat playerStat) {
+    TopThreePanelParent(SpriteManager spriteManager, PlayerManager.PlayerStat playerStat) {
 
         HiscoreSkill hs1;
         HiscoreSkill hs2;
@@ -46,9 +47,9 @@ public class TopThreePanelParent extends PluginPanel
         JPanel container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 
-        JPanel topPanel = new CoolerBossPanel(hs1, kc1);
-        JPanel middlePanel = new CoolerBossPanel(hs2, kc2);
-        JPanel bottomPanel = new CoolerBossPanel(hs3, kc3);
+        JPanel topPanel = new CoolerBossPanel(spriteManager, hs1, kc1);
+        JPanel middlePanel = new CoolerBossPanel(spriteManager, hs2, kc2);
+        JPanel bottomPanel = new CoolerBossPanel(spriteManager, hs3, kc3);
 
         container.add(topPanel);
         container.add(Box.createVerticalStrut(10)); // spacing

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -21,17 +22,20 @@ import java.util.Map;
 public class PvMPluginPanel extends PluginPanel {
 
     private final static String NO_PLAYER_SELECTED = "No player selected";
+    private final static String NO_PLAYER_SELECTED_LEVEL = "?";
 
     private GridBagConstraints c;
     private JPanel bossPanels;
     private JPanel header;
     public JLabel nameLabel;
+    public JLabel levelLabel;
 
-    PlayerManager playerManager;
+    private PlayerManager playerManager;
+    private SpriteManager spriteManager;
 
-    void init(PlayerManager playerManager) {
+    void init(PlayerManager playerManager, SpriteManager spriteManager) {
         this.playerManager = playerManager;
-//        update(playerManager.getLocalPlayer().getPlayer(), playerManager.getLocalPlayer().getPlayer().getName());
+        this.spriteManager = spriteManager;
     }
 
     public PvMPluginPanel()
@@ -50,23 +54,34 @@ public class PvMPluginPanel extends PluginPanel {
         c.gridy = 0;
 
         header = new JPanel();
-        header.setLayout(new BorderLayout());
+        header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
         header.setBorder(new CompoundBorder(
                 BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(58, 58, 58)),
-                BorderFactory.createEmptyBorder(0, 0, 10, 0)));
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
         nameLabel = new JLabel(NO_PLAYER_SELECTED);
         nameLabel.setForeground(Color.YELLOW);
-        nameLabel.setFont(FontManager.getRunescapeSmallFont());
+        nameLabel.setFont(FontManager.getRunescapeFont());
+        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        levelLabel = new JLabel(NO_PLAYER_SELECTED_LEVEL);
+        levelLabel.setForeground(Color.RED);
+        levelLabel.setFont(FontManager.getRunescapeFont());
+        levelLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         header.setBackground(ColorScheme.DARK_GRAY_COLOR);
-        header.add(nameLabel, BorderLayout.CENTER);
+        header.add(nameLabel);
+        header.add(levelLabel);
 
+        layout.setHorizontalGroup(layout.createSequentialGroup()
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                        .addComponent(header)
+                        .addComponent(bossPanels)
+                ).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 
-        layout.setHorizontalGroup(layout.createParallelGroup()
-                .addComponent(bossPanels)
-                .addComponent(header)
         );
+
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(header)
                 .addGap(10)
@@ -87,22 +102,26 @@ public class PvMPluginPanel extends PluginPanel {
     public void update(String playerName)
     {
 
+        PlayerManager.PlayerStat playerStat;
         if (playerName.isEmpty() || playerName == null)
         {
             nameLabel.setText(NO_PLAYER_SELECTED);
+            nameLabel.setText(NO_PLAYER_SELECTED_LEVEL);
             return;
         }
         else
         {
+            playerStat = playerManager.getPlayer(playerName);
             nameLabel.setText("Player: " + playerName);
+            levelLabel.setText("PvM Level: " + playerStat.getLevel());
+
         }
 
-        PlayerManager.PlayerStat playerStat = playerManager.getPlayer(playerName);
 
         SwingUtilities.invokeLater(() ->
                 {
                     bossPanels.removeAll();
-                    bossPanels.add(new TopThreePanelParent(playerStat));
+                    bossPanels.add(new TopThreePanelParent(spriteManager, playerStat));
 
                     List<Map.Entry<HiscoreSkill, Integer>> sorted = playerStat.getSorted();
 

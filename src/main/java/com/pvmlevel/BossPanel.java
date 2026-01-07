@@ -27,7 +27,13 @@ public class BossPanel extends PluginPanel {
         JLabel boss = new JLabel(StringUtils.capitalize(hiscoreSkill.getName().toLowerCase()));
         boss.setFont(FontManager.getRunescapeSmallFont());
         boss.setForeground(Color.GRAY);
-        JLabel kcLabel = getKcLabel(kc);
+        String kcFormatted = QuantityFormatter.quantityToStackSize(kc);
+        JLabel kcLabel = new JLabel(StringUtils.capitalize(kcFormatted));
+
+        kcLabel.setForeground(Color.YELLOW);
+
+        kcLabel.setFont(FontManager.getRunescapeFont());
+        kcLabel.setToolTipText(NumberFormat.getNumberInstance(Locale.US).format(kc));
 
         layout.setVerticalGroup(layout.createParallelGroup()
                 .addGroup(layout.createSequentialGroup()
@@ -45,16 +51,5 @@ public class BossPanel extends PluginPanel {
                 )
         );
 
-    }
-
-    public static JLabel getKcLabel(long kc) {
-        String kcFormatted = QuantityFormatter.quantityToStackSize(kc);
-        JLabel kcLabel = new JLabel(StringUtils.capitalize(kcFormatted));
-
-        kcLabel.setForeground(Color.YELLOW);
-
-        kcLabel.setFont(FontManager.getRunescapeFont());
-        kcLabel.setToolTipText(NumberFormat.getNumberInstance(Locale.US).format(kc));
-        return kcLabel;
     }
 }
