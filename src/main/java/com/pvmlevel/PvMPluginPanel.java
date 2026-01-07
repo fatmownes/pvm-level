@@ -1,19 +1,15 @@
-package com.pvmlevel.panel;
+package com.pvmlevel;
 
-import com.pvmlevel.PlayerManager;
 import lombok.extern.slf4j.Slf4j;
-<<<<<<< Updated upstream:src/main/java/com/pvmlevel/PvMPluginPanel.java
 import net.runelite.api.Client;
 import net.runelite.api.Player;
 import net.runelite.client.game.ItemManager;
-=======
-import net.runelite.client.game.SpriteManager;
->>>>>>> Stashed changes:src/main/java/com/pvmlevel/panel/PvMPluginPanel.java
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
+import javax.inject.Inject;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -33,11 +29,7 @@ public class PvMPluginPanel extends PluginPanel {
 
     PlayerManager playerManager;
 
-<<<<<<< Updated upstream:src/main/java/com/pvmlevel/PvMPluginPanel.java
     void init(PlayerManager playerManager) {
-=======
-    public void init(PlayerManager playerManager, SpriteManager spriteManager) {
->>>>>>> Stashed changes:src/main/java/com/pvmlevel/panel/PvMPluginPanel.java
         this.playerManager = playerManager;
 //        update(playerManager.getLocalPlayer().getPlayer(), playerManager.getLocalPlayer().getPlayer().getName());
     }
