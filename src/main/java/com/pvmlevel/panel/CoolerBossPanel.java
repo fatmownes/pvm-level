@@ -67,7 +67,6 @@ public class CoolerBossPanel extends PluginPanel {
                         .addComponent(boss)
                         .addComponent(kcLabel)
                 )
-
         );
 
         layout.setHorizontalGroup(layout.createSequentialGroup()

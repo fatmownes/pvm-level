@@ -18,6 +18,7 @@ import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
+import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
@@ -36,8 +37,7 @@ import java.util.stream.StreamSupport;
 )
 public class PvmLevelPlugin extends Plugin
 {
-	private static final String MENU_TITLE = "(PvM-level: ?)";
-	private static final String MENU_TITLE_SUB = "(PvM-level";
+	private static final String MENU_TITLE = "PvM Level";
 
 	@Inject
 	private Client client;
@@ -68,6 +68,11 @@ public class PvmLevelPlugin extends Plugin
 	private PlayerManager playerManager;
 
 	private boolean firstTick = true;
+
+	public static final String YELLOW = "ffff00";
+	public static final String GREEN = "00ff00";
+	public static final String RED = "ff0000";
+	public static final String ORANGE = "ff9040";
 
 	@Override
 	protected void startUp() throws Exception
@@ -100,7 +105,7 @@ public class PvmLevelPlugin extends Plugin
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked event)
 	{
-		if (event.getMenuOption().contains(MENU_TITLE_SUB))
+		if (event.getMenuOption().equals(MENU_TITLE))
 		{
 			try
 			{
@@ -113,7 +118,7 @@ public class PvmLevelPlugin extends Plugin
 
 			String target = Text.sanitize(Text.removeTags(event.getMenuEntry().getTarget()));
 
-			pvmPluginPanel.update(target.substring(0, target.indexOf("(level-")).trim());
+			pvmPluginPanel.update(target.substring(0, target.indexOf("(score-")).trim());
 		}
 
 	}
@@ -121,7 +126,6 @@ public class PvmLevelPlugin extends Plugin
 	@Subscribe
 	public void onMenuOpened(MenuOpened event)
 	{
-
 		Stream.of(event.getMenuEntries())
 				.filter(e -> e.getOption().equals(MENU_TITLE))
 				.forEach(menuEntry -> {
@@ -130,17 +134,56 @@ public class PvmLevelPlugin extends Plugin
 					if (actor instanceof Player) {
 						Player player = (Player) actor;
 						String playerName = player.getName();
-
-						if (playerManager.getPlayer(playerName) != null) {
-							menuEntry.setOption(
-									String.format(
-											"(PvM-level: %s)",
-											playerManager.getPlayer(playerName).getLevel())
-							);
+						PlayerManager.PlayerStat playerStat = playerManager.getPlayer(playerName);
+						if (playerStat != null) {
+							menuEntry.setTarget(updateTarget(menuEntry, playerStat));
+							menuEntry.setOption(MENU_TITLE); // TODO i think we can remove this line
 						}
 					}
 				});
 	}
+
+	private String updateTarget(MenuEntry menuEntry, PlayerManager.PlayerStat playerStat) {
+		String s = menuEntry.getTarget();
+
+		String newLevel = String.format("(score-%s)", playerStat.getLevel());
+
+		// Replace the level text
+		s = s.replaceAll("\\(level-\\d+\\)", newLevel);
+
+		String color = colorLevelCompare(playerStat);
+
+		if (!color.isBlank()) {
+			// Replace the second <col=> tag
+			s = s.replaceAll("(<col=[^>]+>[^<]+)<col=[^>]+>", "$1<col="
+					+ colorLevelCompare(playerStat) + ">");
+		}
+
+		return s;
+	}
+
+	// TOOD move me to the player manager probably.
+	private String colorLevelCompare(PlayerManager.PlayerStat playerStat) {
+		String color = "";
+
+		if (playerStat.getLevel().equals("?")) {
+			return "";
+		}
+
+		if (Integer.parseInt(playerStat.getLevel()) >
+				Integer.parseInt(this.playerManager.getLocalPlayer().getLevel())) {
+			color = RED;
+		} else if (Integer.parseInt(playerStat.getLevel()) ==
+				Integer.parseInt(this.playerManager.getLocalPlayer().getLevel())) {
+			color = YELLOW;
+		} else if (Integer.parseInt(playerStat.getLevel()) <
+				Integer.parseInt(this.playerManager.getLocalPlayer().getLevel())) {
+			color = GREEN;
+		}
+
+		return color;
+	}
+
 
 	@Subscribe
 	public void onMenuEntryAdded(MenuEntryAdded event)

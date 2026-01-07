@@ -50,7 +50,10 @@ public class PlayerManager {
         this.localPlayer = client.getLocalPlayer();
         try {
             PlayerStat localPlayerStat = new PlayerStat(this.localPlayer);
-            // TODO for some reason the player name is null wehn logged in state happens
+
+            // TODO!!! Lets actually make this async
+            // it slows down the login by a lot.
+
             executor.submit(localPlayerStat::fetchPlayerKC).get();
             this.activeUsernameToKillList.put(this.localPlayer.getName(), localPlayerStat);
             log.debug("Finished fetching local player.");
