@@ -11,6 +11,7 @@ import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreClient;
 import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
@@ -60,6 +61,9 @@ public class PvmLevelPlugin extends Plugin
 	@Inject
 	private Provider<MenuManager> menuManager;
 
+	@Inject
+	SpriteManager spriteManager;
+
 	private PvMPluginPanel pvmPluginPanel;
 	private NavigationButton navButton;
 
@@ -74,7 +78,7 @@ public class PvmLevelPlugin extends Plugin
 		menuManager.get().addPlayerMenuItem(MENU_TITLE);
 
 		pvmPluginPanel = injector.getInstance(PvMPluginPanel.class);
-		pvmPluginPanel.init(playerManager);
+		pvmPluginPanel.init(playerManager, spriteManager);
 
 		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "game_icon_tzkalzuk.png");
 
