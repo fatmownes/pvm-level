@@ -118,6 +118,8 @@ public class PlayerManager {
     {
         @Getter
         private final Player player;
+
+        @Getter
         private final Map<HiscoreSkill, Integer> killCounts;
 
         private boolean hasFetchedKcs = false;
@@ -154,10 +156,6 @@ public class PlayerManager {
             return this.hasFetchedKcs;
         }
 
-        private Map<HiscoreSkill, Integer> getKillCounts() {
-            return this.killCounts;
-        }
-
         // TODO clean these up and put them in a better place?
         public String getLevel() {
             if (!hasFetchedKcs) {
@@ -174,13 +172,9 @@ public class PlayerManager {
             if (calculatedLevel != -1) {
                 return this.calculatedLevel;
             }
-            AtomicInteger sum = new AtomicInteger();
 
-            this.getKillCounts().forEach((hs, c) -> {
-                //for now lets naively just add them up!
-                sum.addAndGet(c);
-            });
-            calculatedLevel = sum.get();
+            this.calculatedLevel = PvmScore.getScore(getKillCounts(), PvmScore.DIVISOR);
+
             return calculatedLevel;
         }
 
@@ -212,8 +206,6 @@ public class PlayerManager {
             {
                 log.warn("Failed to fetch kill count for {}", player.getName());
                 log.warn(e.toString());
-            }
-            finally {
             }
         }
 

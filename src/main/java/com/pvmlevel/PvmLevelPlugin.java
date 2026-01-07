@@ -37,7 +37,7 @@ import java.util.stream.StreamSupport;
 )
 public class PvmLevelPlugin extends Plugin
 {
-	private static final String MENU_TITLE = "PvM Level";
+	private static final String MENU_TITLE = "PvM Score";
 
 	@Inject
 	private Client client;
