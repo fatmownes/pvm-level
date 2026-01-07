@@ -6,6 +6,7 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 import javax.swing.*;
 
+import com.pvmlevel.panel.PvMPluginPanel;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
@@ -28,9 +29,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import static net.runelite.api.GameState.LOADING;
-import static net.runelite.api.GameState.LOGGED_IN;
 
 @Slf4j
 @PluginDescriptor(

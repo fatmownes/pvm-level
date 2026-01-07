@@ -1,4 +1,4 @@
-package com.pvmlevel;
+package com.pvmlevel.panel;
 
 import net.runelite.api.gameval.SpriteID;
 import net.runelite.client.game.SpriteManager;
