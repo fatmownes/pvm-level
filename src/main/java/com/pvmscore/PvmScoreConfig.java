@@ -5,7 +5,7 @@ import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
 @ConfigGroup("example")
-public interface PvmLevelConfig extends Config
+public interface PvmScoreConfig extends Config
 {
 	@ConfigItem(
 		keyName = "greeting",

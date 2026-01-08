@@ -34,7 +34,7 @@ import java.util.stream.StreamSupport;
 @PluginDescriptor(
 	name = "Example"
 )
-public class PvmLevelPlugin extends Plugin
+public class PvmScorePlugin extends Plugin
 {
 	private static final String MENU_TITLE = "PvM Score";
 
@@ -48,7 +48,7 @@ public class PvmLevelPlugin extends Plugin
 	private OverlayManager overlayManager;
 
 	@Inject
-	private PvmLevelConfig config;
+	private PvmScoreConfig config;
 
 	Set<Player> previousPlayerSet;
 
@@ -234,9 +234,9 @@ public class PvmLevelPlugin extends Plugin
 	}
 
 	@Provides
-	PvmLevelConfig provideConfig(ConfigManager configManager)
+	PvmScoreConfig provideConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(PvmLevelConfig.class);
+		return configManager.getConfig(PvmScoreConfig.class);
 	}
 
 }

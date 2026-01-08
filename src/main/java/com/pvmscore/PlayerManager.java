@@ -46,7 +46,7 @@ public class PlayerManager {
                 log.error("Error fetching Kc's for local player on log in.");
             }
 
-            this.activeUsernameToKillList.put(this.localPlayer.getName(), localPlayerStat);
+            this.activeUsernameToKillList.put(Objects.requireNonNull(this.localPlayer.getName()), localPlayerStat);
             log.debug("Finished fetching local player.");
 
         });
