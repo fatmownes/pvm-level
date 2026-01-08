@@ -2,6 +2,7 @@ package com.pvmlevel.panel;
 
 import com.pvmlevel.PlayerManager;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Player;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.ui.ColorScheme;
@@ -9,7 +10,6 @@ import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
@@ -35,6 +35,8 @@ public class PvMPluginPanel extends PluginPanel {
     private SpriteManager spriteManager;
 
     private GroupLayout layout;
+
+    private JButton resetToSelf;
 
     public void init(PlayerManager playerManager, SpriteManager spriteManager) {
         this.playerManager = playerManager;
@@ -62,6 +64,20 @@ public class PvMPluginPanel extends PluginPanel {
         c.gridy = 0;
 
         header = new HeaderPanel();
+
+        resetToSelf = new JButton();
+        resetToSelf.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        resetToSelf.setFont(FontManager.getRunescapeSmallFont());
+        resetToSelf.add(new JLabel("Reset to Me"));
+        resetToSelf.addActionListener(e -> {
+            Player localPlayer = playerManager.getLocalPlayer().getPlayer();
+
+            if (localPlayer != null) {
+                update(localPlayer.getName());
+            }
+        });
+
+        header.add(resetToSelf);
 
         setLayout();
     }
@@ -104,7 +120,7 @@ public class PvMPluginPanel extends PluginPanel {
         if (playerName.isEmpty() || playerName == null)
         {
             this.header.nameLabel.setText(NO_PLAYER_SELECTED);
-            this.header.levelLabel.setText(NO_PLAYER_SELECTED_LEVEL);
+            this.header.scoreLabel.setText(NO_PLAYER_SELECTED_LEVEL);
             this.header.totalKcLabel.setText(NO_PLAYER_SELECTED_KC);
             return;
         }
@@ -112,7 +128,7 @@ public class PvMPluginPanel extends PluginPanel {
         {
             playerStat = playerManager.getPlayer(playerName);
             this.header.nameLabel.setText("Player: " + playerName);
-            this.header.levelLabel.setText("Score: " + playerStat.getLevel());
+            this.header.scoreLabel.setText("Score: " + playerStat.getLevel());
             this.header.totalKcLabel.setText("Total kills: " + playerStat.getTotalKc());
         }
 
