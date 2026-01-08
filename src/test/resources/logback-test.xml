@@ -52,5 +52,5 @@
 		<appender-ref ref="STDOUT"/>
 		<appender-ref ref="FILE"/>
 	</root>
-	<logger name="com.pvmlevel" level="DEBUG" />
+	<logger name="com.pvmscore" level="DEBUG" />
 </configuration>

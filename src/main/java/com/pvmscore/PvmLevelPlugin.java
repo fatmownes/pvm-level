@@ -1,4 +1,4 @@
-package com.pvmlevel;
+package com.pvmscore;
 
 import com.google.inject.Provider;
 import com.google.inject.Provides;
@@ -6,7 +6,7 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 import javax.swing.*;
 
-import com.pvmlevel.panel.PvMPluginPanel;
+import com.pvmscore.panel.PvMPluginPanel;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
@@ -18,7 +18,6 @@ import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;

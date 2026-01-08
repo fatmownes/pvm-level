@@ -1,4 +1,4 @@
-package com.pvmlevel.panel;
+package com.pvmscore.panel;
 
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -8,7 +8,7 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
 
-import static com.pvmlevel.panel.PvMPluginPanel.*;
+import static com.pvmscore.panel.PvMPluginPanel.*;
 
 public class HeaderPanel extends PluginPanel {
 

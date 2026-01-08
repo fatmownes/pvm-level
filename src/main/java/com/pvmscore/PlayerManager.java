@@ -1,4 +1,4 @@
-package com.pvmlevel;
+package com.pvmscore;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

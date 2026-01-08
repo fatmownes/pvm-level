@@ -1,6 +1,6 @@
-package com.pvmlevel.panel;
+package com.pvmscore.panel;
 
-import com.pvmlevel.PlayerManager;
+import com.pvmscore.PlayerManager;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Player;
 import net.runelite.client.game.SpriteManager;

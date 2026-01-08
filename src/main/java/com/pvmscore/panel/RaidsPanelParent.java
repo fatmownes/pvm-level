@@ -1,6 +1,6 @@
-package com.pvmlevel.panel;
+package com.pvmscore.panel;
 
-import com.pvmlevel.PlayerManager;
+import com.pvmscore.PlayerManager;
 import net.runelite.api.gameval.SpriteID;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreSkill;

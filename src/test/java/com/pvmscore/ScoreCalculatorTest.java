@@ -1,9 +1,8 @@
-package com.pvmlevel;
+package com.pvmscore;
 
 import net.runelite.client.hiscore.HiscoreSkill;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 import java.util.Map;

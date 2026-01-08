@@ -1,4 +1,4 @@
-package com.pvmlevel;
+package com.pvmscore;
 
 import com.google.common.collect.ImmutableList;
 import net.runelite.client.hiscore.HiscoreSkill;

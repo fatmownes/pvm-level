@@ -1,6 +1,6 @@
-package com.pvmlevel.panel;
+package com.pvmscore.panel;
 
-import com.pvmlevel.PlayerManager;
+import com.pvmscore.PlayerManager;
 import net.runelite.api.gameval.SpriteID;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreSkill;
@@ -11,7 +11,6 @@ import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.QuantityFormatter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nonnull;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -20,37 +19,64 @@ import java.awt.image.BufferedImage;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-public class GMPanelParent extends PluginPanel {
+public class TopThreePanelParent extends PluginPanel
+{
 
-    GMPanelParent(SpriteManager spriteManager, PlayerManager.PlayerStat playerStat) {
+    TopThreePanelParent(SpriteManager spriteManager, PlayerManager.PlayerStat playerStat) {
+
+        HiscoreSkill hs1;
+        HiscoreSkill hs2;
+        HiscoreSkill hs3;
+        int kc1;
+        int kc2;
+        int kc3;
+
+        if (playerStat == null || !playerStat.hasFetchedKcs() || playerStat.getSorted().size() < 3) {
+            hs1 = null;
+            hs2 = null;
+            hs3 = null;
+
+            kc1 = 0;
+            kc2 = 0;
+            kc3 = 0;
+        } else {
+            hs1 = playerStat.getSorted().get(0).getKey();
+            hs2 = playerStat.getSorted().get(1).getKey();
+            hs3 = playerStat.getSorted().get(2).getKey();
+
+             kc1 = playerStat.getSorted().get(0).getValue();
+             kc2 = playerStat.getSorted().get(1).getValue();
+             kc3 = playerStat.getSorted().get(2).getValue();
+        }
 
         setBorder(new EmptyBorder(3, 3, 3, 3));
-
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-
         setBackground(ColorScheme.DARK_GRAY_COLOR);
 
-        JPanel solPanel = new GMPanel(spriteManager, HiscoreSkill.SOL_HEREDIT, playerStat == null ? 0 : playerStat.getKillCounts().getOrDefault(HiscoreSkill.SOL_HEREDIT, 0));
-        JPanel zukPanel = new GMPanel(spriteManager, HiscoreSkill.TZKAL_ZUK, playerStat == null ? 0 : playerStat.getKillCounts().getOrDefault(HiscoreSkill.SOL_HEREDIT, 0));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        add(solPanel);
-        add(Box.createHorizontalStrut(6)); // spacing
-        add(zukPanel);
+        JPanel topPanel = new TopThreePanel(spriteManager, hs1, kc1);
+        JPanel middlePanel = new TopThreePanel(spriteManager, hs2, kc2);
+        JPanel bottomPanel = new TopThreePanel(spriteManager, hs3, kc3);
+
+        add(topPanel);
+        add(Box.createVerticalStrut(6)); // spacing
+        add(middlePanel);
+        add(Box.createVerticalStrut(6)); // spacing
+        add(bottomPanel);
+        add(Box.createVerticalStrut(12)); // spacing
 
         setVisible(true);
     }
 
-    private class GMPanel extends JPanel {
+    private class TopThreePanel extends PluginPanel {
 
-        public GMPanel(SpriteManager spriteManager, HiscoreSkill hiscoreSkill, int kc)
+        TopThreePanel(SpriteManager spriteManager, HiscoreSkill hiscoreSkill, Integer kc)
         {
-
             setBackground(ColorScheme.DARKER_GRAY_COLOR);
-            Color borderColor = new Color(58, 58, 58);
 
             // Move border to the panel
             setBorder(new CompoundBorder(
-                    BorderFactory.createMatteBorder(1, 1, 1, 1, borderColor),
+                    BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(58, 58, 58)),
                     BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
             // Make panel fill its parent's width
@@ -59,7 +85,11 @@ public class GMPanelParent extends PluginPanel {
             GroupLayout layout = new GroupLayout(this);
             this.setLayout(layout);
 
-            JLabel boss = getBossLabelName(hiscoreSkill);
+            String bossName = (hiscoreSkill != null) ? StringUtils.capitalize(hiscoreSkill.getName().toLowerCase()) : "None";
+
+            JLabel boss = new JLabel(bossName);
+            boss.setFont(FontManager.getRunescapeBoldFont());
+            boss.setForeground(Color.GRAY);
 
             String kcFormatted = QuantityFormatter.quantityToStackSize(kc);
             JLabel kcLabel = new JLabel(StringUtils.capitalize(kcFormatted));
@@ -98,24 +128,6 @@ public class GMPanelParent extends PluginPanel {
                     )
                     .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE) // flexible left gap
             );
-        }
-
-        @Nonnull
-        private JLabel getBossLabelName(HiscoreSkill hiscoreSkill) {
-            String bossName = "";
-
-            if (hiscoreSkill.equals(HiscoreSkill.TZKAL_ZUK)) {
-                bossName = "Zuk";
-            }
-
-            if (hiscoreSkill.equals(HiscoreSkill.SOL_HEREDIT)) {
-                bossName = "Sol";
-            }
-
-            JLabel boss = new JLabel(bossName);
-            boss.setFont(FontManager.getRunescapeBoldFont());
-            boss.setForeground(Color.GRAY);
-            return boss;
         }
 
     }

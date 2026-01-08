@@ -1,4 +1,4 @@
-package com.pvmlevel.panel;
+package com.pvmscore.panel;
 
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.ui.ColorScheme;

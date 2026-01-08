@@ -1,4 +1,4 @@
-package com.pvmlevel;
+package com.pvmscore;
 
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
