@@ -137,7 +137,7 @@ public class PvmLevelPlugin extends Plugin
 						PlayerManager.PlayerStat playerStat = playerManager.getPlayer(playerName);
 						if (playerStat != null) {
 							menuEntry.setTarget(updateTarget(menuEntry, playerStat));
-							menuEntry.setOption(MENU_TITLE); // TODO i think we can remove this line
+//							menuEntry.setOption(MENU_TITLE); // TODO i think we can remove this line
 						}
 					}
 				});
