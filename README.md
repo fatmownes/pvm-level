@@ -1,4 +1,4 @@
-# PvM Level plugin
+# PvM Score plugin
 A Runelite plugin that calculates a score based off of player's bossing Hiscores.
 
 Adds these scores to the player right-click menu, and adds 
