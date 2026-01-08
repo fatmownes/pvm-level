@@ -1,23 +1,13 @@
 package com.pvmlevel;
 
-import com.google.inject.Provides;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
-import net.runelite.client.hiscore.HiscoreClient;
-import net.runelite.client.hiscore.HiscoreResult;
-import net.runelite.client.hiscore.HiscoreSkill;
-import net.runelite.client.hiscore.HiscoreSkillType;
+import net.runelite.client.hiscore.*;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -36,34 +26,30 @@ public class PlayerManager {
     private final Client client;
     private final HiscoreClient hiscoreClient;
     private Player localPlayer;
-    private PlayerStat emptyPlayerStat;
 
     public PlayerManager(Client client, HiscoreClient hiscoreClient) {
         this.client = client;
         this.hiscoreClient = hiscoreClient;
-
-        this.emptyPlayerStat = new PlayerStat(null);
-
     }
 
     public PlayerStat getLocalPlayer() {
         return this.activeUsernameToKillList.get(localPlayer.getName());
     }
 
-    public void initLocalPlayer() {
+    public CompletableFuture<HiscoreResult> initLocalPlayer() {
         this.localPlayer = client.getLocalPlayer();
-        try {
-            PlayerStat localPlayerStat = new PlayerStat(this.localPlayer);
+        PlayerStat localPlayerStat = new PlayerStat(this.localPlayer);
 
-            // TODO!!! Lets actually make this async
-            // it slows down the login by a lot.
+        return localPlayerStat.fetchPlayerKC().whenComplete((result, err) -> {
 
-            executor.submit(localPlayerStat::fetchPlayerKC).get();
+            if (err != null) {
+                log.error("Error fetching Kc's for local player on log in.");
+            }
+
             this.activeUsernameToKillList.put(this.localPlayer.getName(), localPlayerStat);
             log.debug("Finished fetching local player.");
-        } catch (Exception e) {
-            log.error("Error in sync waiting for local lookup.");
-        }
+
+        });
     }
 
     public void addPlayer(Player player) {
@@ -76,13 +62,11 @@ public class PlayerManager {
             return;
         }
 
-        //safety?
         if (activeUsernameToKillList.size() > 1000) {
             return;
         }
 
         if (cachedUsernameToKillList.containsKey(player.getName())) {
-            log.debug("adding back user from the cache.");
             activeUsernameToKillList.putIfAbsent(player.getName(), cachedUsernameToKillList.get(player.getName()));
             cachedUsernameToKillList.remove(player.getName());
         } else {
@@ -96,7 +80,7 @@ public class PlayerManager {
         String name =  Objects.requireNonNull(player.getName());
         PlayerStat stats = activeUsernameToKillList.remove(name);
         if (stats != null && stats.hasFetchedKcs) {
-            log.debug("caching {}", name);
+            log.debug("Caching player who left scene {}", name);
             cachedUsernameToKillList.put(name, stats);
         }
 
@@ -113,7 +97,6 @@ public class PlayerManager {
         }
 
         PlayerStat ps = this.kcLookupQueue.poll();
-
         executor.submit(ps::fetchPlayerKC);
     }
 
@@ -207,36 +190,35 @@ public class PlayerManager {
             return calculatedLevel;
         }
 
-        private void fetchPlayerKC()
+        private CompletableFuture<HiscoreResult> fetchPlayerKC()
         {
-            try {
+            long start = System.currentTimeMillis();
 
-                long start = System.currentTimeMillis();
+            log.debug("Attempting to fetch KC's for player {}", player.getName());
 
-                log.debug("Attempting to fetch KC's for player {}", player.getName());
+            return hiscoreClient.lookupAsync(player.getName(), HiscoreEndpoint.NORMAL)
+                    .whenComplete((result, err) -> {
 
-
-                HiscoreResult result = hiscoreClient.lookup(player.getName());
-                result.getSkills().forEach((hiscore, skill) -> {
-
-                    if (hiscore.getType().equals(HiscoreSkillType.BOSS)) {
-                        if (skill.getLevel() > 0) {
-                            this.addKc(hiscore, skill.getLevel());
+                        if (err != null) {
+                            log.error("Error fetching Kc's for {}", player.getName());
+                            return;
                         }
-                    }
 
+                        result.getSkills().forEach((hiscore, skill) -> {
+                            if (hiscore.getType().equals(HiscoreSkillType.BOSS)) {
+                                if (skill.getLevel() > 0) {
+                                    this.addKc(hiscore, skill.getLevel());
+                                }
+                            }
+                        });
+
+                    calculateLevel();
+                    hasFetchedKcs = true;
+                    long end = System.currentTimeMillis();
+                    log.debug("Hiscore Fetch took {} seconds for {}.", (end - start) / 1000, player.getName());
                 });
-                calculateLevel();
-                hasFetchedKcs = true;
-                long end = System.currentTimeMillis();
-                log.debug("Hiscore Fetch took {} seconds for {}.", (end - start) / 1000, player.getName());
-            }
-            catch (Exception e)
-            {
-                log.warn("Failed to fetch kill count for {}", player.getName());
-                log.warn(e.toString());
-            }
         }
+
 
     }
 

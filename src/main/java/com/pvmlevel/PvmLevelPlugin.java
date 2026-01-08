@@ -194,6 +194,9 @@ public class PvmLevelPlugin extends Plugin
 	public void onGameStateChanged(GameStateChanged gameStateChanged)
 	{
 		//if game log in set first tick to true;
+		if (gameStateChanged.getGameState().equals(GameState.LOGGED_IN)) {
+			firstTick = true;
+		}
 	}
 
 	@Subscribe
@@ -202,8 +205,9 @@ public class PvmLevelPlugin extends Plugin
 		// because LOGGED_IN Game state will have an incomplete local player.
 		if (firstTick) {
 			firstTick = false;
-			playerManager.initLocalPlayer();
-			pvmPluginPanel.update(Text.sanitize(playerManager.getLocalPlayer().getPlayer().getName()));
+			playerManager.initLocalPlayer().whenComplete((result, ignore) -> {
+				pvmPluginPanel.update(Text.sanitize(playerManager.getLocalPlayer().getPlayer().getName()));
+			});
 		}
 
 		IndexedObjectSet<? extends Player> players = client.getTopLevelWorldView().players();
