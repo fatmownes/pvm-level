@@ -42,25 +42,20 @@ public class TopThreePanelParent extends PluginPanel
         setBorder(new EmptyBorder(3, 3, 3, 3));
         setBackground(ColorScheme.DARK_GRAY_COLOR);
 
-        JPanel container = new JPanel();
-        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JPanel topPanel = new CoolerBossPanel(spriteManager, hs1, kc1);
         JPanel middlePanel = new CoolerBossPanel(spriteManager, hs2, kc2);
         JPanel bottomPanel = new CoolerBossPanel(spriteManager, hs3, kc3);
 
-        container.add(topPanel);
-        container.add(Box.createVerticalStrut(10)); // spacing
-        container.add(middlePanel);
-        container.add(Box.createVerticalStrut(10)); // spacing
-        container.add(bottomPanel);
+        add(topPanel);
+        add(Box.createVerticalStrut(6)); // spacing
+        add(middlePanel);
+        add(Box.createVerticalStrut(6)); // spacing
+        add(bottomPanel);
+        add(Box.createVerticalStrut(12)); // spacing
 
-        add(container);
         setVisible(true);
-    }
-
-    private class TopThreePanel extends JPanel {
-
     }
 
 }

@@ -54,12 +54,12 @@ public class CoolerBossPanel extends PluginPanel {
 
         spriteManager.getSpriteAsync(hiscoreSkill == null ? SpriteID.SideIcons.COMBAT : hiscoreSkill.getSpriteId(), 0,
                 (sprite) ->
-                SwingUtilities.invokeLater(() ->
-                {
-                    final BufferedImage scaledSprite = ImageUtil.
-                            resizeImage(ImageUtil.resizeCanvas(sprite, 25, 25), 20, 20);
-                    spriteLabel.setIcon(new ImageIcon(scaledSprite));
-                }));
+                    SwingUtilities.invokeLater(() ->
+                    {
+                        final BufferedImage scaledSprite = ImageUtil.
+                                resizeImage(ImageUtil.resizeCanvas(sprite, 25, 25), 20, 20);
+                        spriteLabel.setIcon(new ImageIcon(scaledSprite));
+                    }));
 
         layout.setVerticalGroup(layout.createParallelGroup()
                 .addGroup(layout.createSequentialGroup()

@@ -20,28 +20,41 @@ public class PvMPluginPanel extends PluginPanel {
 
     public final static String NO_PLAYER_SELECTED = "No player selected";
     public final static String NO_PLAYER_SELECTED_LEVEL = "Score: ?";
+    public final static String NO_PLAYER_SELECTED_KC = "Total kills: ?";
 
     private GridBagConstraints c;
     private JPanel bossPanels;
+    private JPanel topThreePanel;
     private HeaderPanel header;
+    private JPanel raidsPanel;
+    private JPanel hardModeRaidsPanel;
+
+    private JPanel gmPanel;
 
     private PlayerManager playerManager;
     private SpriteManager spriteManager;
 
+    private GroupLayout layout;
+
     public void init(PlayerManager playerManager, SpriteManager spriteManager) {
         this.playerManager = playerManager;
         this.spriteManager = spriteManager;
-    }
 
-    public PvMPluginPanel()
-    {
-
-        GroupLayout layout = new GroupLayout(this);
+        layout = new GroupLayout(this);
         setLayout(layout);
         setBorder(new EmptyBorder(10, 10, 10, 10));
         setBackground(ColorScheme.DARK_GRAY_COLOR);
 
-        bossPanels = new JPanel(new GridBagLayout());
+        this.raidsPanel = new RaidsPanelParent(spriteManager, null, false);
+
+        this.gmPanel = new GMPanelParent(spriteManager, null);
+
+        this.hardModeRaidsPanel = new RaidsPanelParent(spriteManager, null, true);
+
+        this.topThreePanel = new TopThreePanelParent(spriteManager, null);
+
+        this.bossPanels = new JPanel(new GridBagLayout());
+
         c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
@@ -50,40 +63,49 @@ public class PvMPluginPanel extends PluginPanel {
 
         header = new HeaderPanel();
 
+        setLayout();
+    }
+
+    public PvMPluginPanel()
+    {
+
+    }
+
+    private void setLayout() {
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                         .addComponent(header)
+                        .addComponent(hardModeRaidsPanel)
+                        .addComponent(gmPanel)
+                        .addComponent(raidsPanel)
+                        .addComponent(topThreePanel)
                         .addComponent(bossPanels)
-                ).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-
+                )
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(header)
                 .addGap(10)
+                .addComponent(hardModeRaidsPanel)
+                .addGap(10)
+                .addComponent(gmPanel)
+                .addGap(10)
+                .addComponent(raidsPanel)
+                .addGap(10)
+                .addComponent(topThreePanel)
+                .addGap(10)
                 .addComponent(bossPanels)
         );
     }
 
-    // inferno / sol: 25
-    // hard mode:     15
-    //
-    // raid :         10
-    // something:      3
-    // zulrah esq:     2
-    // early-md l:     1
-
-    // divide 1000 round down
-
     public void update(String playerName)
     {
-
         PlayerManager.PlayerStat playerStat;
         if (playerName.isEmpty() || playerName == null)
         {
             this.header.nameLabel.setText(NO_PLAYER_SELECTED);
             this.header.levelLabel.setText(NO_PLAYER_SELECTED_LEVEL);
+            this.header.totalKcLabel.setText(NO_PLAYER_SELECTED_KC);
             return;
         }
         else
@@ -91,17 +113,21 @@ public class PvMPluginPanel extends PluginPanel {
             playerStat = playerManager.getPlayer(playerName);
             this.header.nameLabel.setText("Player: " + playerName);
             this.header.levelLabel.setText("Score: " + playerStat.getLevel());
-
+            this.header.totalKcLabel.setText("Total kills: " + playerStat.getTotalKc());
         }
 
 
         SwingUtilities.invokeLater(() ->
                 {
+                    removeAll();
                     bossPanels.removeAll();
-                    bossPanels.add(new TopThreePanelParent(spriteManager, playerStat));
+
+                    topThreePanel = new TopThreePanelParent(spriteManager, playerStat);
+                    raidsPanel = new RaidsPanelParent(spriteManager, playerStat, false);
+                    hardModeRaidsPanel = new RaidsPanelParent(spriteManager, playerStat, true);
+                    gmPanel = new GMPanelParent(spriteManager, playerStat);
 
                     List<Map.Entry<HiscoreSkill, Integer>> sorted = playerStat.getSorted();
-
                     if (playerStat.hasFetchedKcs()){
                         for (int i = 3; i < sorted.size(); i++) {
                             int currKc = sorted.get(i).getValue();
@@ -111,6 +137,9 @@ public class PvMPluginPanel extends PluginPanel {
                         header.revalidate();
                         header.repaint();
                     }
+
+                    setLayout();
+
                 }
         );
     }

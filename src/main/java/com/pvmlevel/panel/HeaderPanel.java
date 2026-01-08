@@ -8,13 +8,13 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
 
-import static com.pvmlevel.panel.PvMPluginPanel.NO_PLAYER_SELECTED;
-import static com.pvmlevel.panel.PvMPluginPanel.NO_PLAYER_SELECTED_LEVEL;
+import static com.pvmlevel.panel.PvMPluginPanel.*;
 
 public class HeaderPanel extends PluginPanel {
 
     public JLabel nameLabel;
     public JLabel levelLabel;
+    public JLabel totalKcLabel;
 
     public HeaderPanel() {
         GroupLayout groupLayout = new GroupLayout(this);
@@ -33,6 +33,12 @@ public class HeaderPanel extends PluginPanel {
         levelLabel.setFont(FontManager.getRunescapeFont());
         levelLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        totalKcLabel = new JLabel(NO_PLAYER_SELECTED_KC);
+        totalKcLabel.setForeground(Color.RED);
+        totalKcLabel.setFont(FontManager.getRunescapeFont());
+        totalKcLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
         setBackground(ColorScheme.DARK_GRAY_COLOR);
         add(nameLabel);
         add(levelLabel);
@@ -41,6 +47,7 @@ public class HeaderPanel extends PluginPanel {
                 .addGroup(groupLayout.createSequentialGroup()
                         .addComponent(nameLabel)
                         .addComponent(levelLabel)
+                        .addComponent(totalKcLabel)
                 )
 
         );
@@ -50,6 +57,7 @@ public class HeaderPanel extends PluginPanel {
                 .addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(nameLabel)
                         .addComponent(levelLabel)
+                        .addComponent(totalKcLabel)
                 )
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE) // flexible left gap
         );

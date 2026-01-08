@@ -36,10 +36,14 @@ public class PlayerManager {
     private final Client client;
     private final HiscoreClient hiscoreClient;
     private Player localPlayer;
+    private PlayerStat emptyPlayerStat;
 
     public PlayerManager(Client client, HiscoreClient hiscoreClient) {
         this.client = client;
         this.hiscoreClient = hiscoreClient;
+
+        this.emptyPlayerStat = new PlayerStat(null);
+
     }
 
     public PlayerStat getLocalPlayer() {
@@ -125,6 +129,7 @@ public class PlayerManager {
         private boolean hasFetchedKcs = false;
 
         private int calculatedLevel = -1;
+        private int calculatedKc = -1;
 
         private List<Map.Entry<HiscoreSkill, Integer>> sorted;
 
@@ -156,7 +161,6 @@ public class PlayerManager {
             return this.hasFetchedKcs;
         }
 
-        // TODO clean these up and put them in a better place?
         public String getLevel() {
             if (!hasFetchedKcs) {
                 if (!kcLookupQueue.contains(this)){
@@ -166,6 +170,31 @@ public class PlayerManager {
             }
 
             return String.valueOf(calculateLevel());
+        }
+
+        public String getTotalKc() {
+            if (!hasFetchedKcs) {
+                if (!kcLookupQueue.contains(this)){
+                    kcLookupQueue.offer(this);
+                }
+                return "?";
+            }
+
+            return String.valueOf(calculateTotalKc());
+        }
+
+        private int calculateTotalKc() {
+            if (calculatedKc != -1) {
+                return this.calculatedKc;
+            }
+
+            AtomicInteger total = new AtomicInteger();
+
+            this.killCounts.values().forEach(total::addAndGet);
+
+            this.calculatedKc = total.get();
+            return this.calculatedKc;
+
         }
 
         private int calculateLevel() {
