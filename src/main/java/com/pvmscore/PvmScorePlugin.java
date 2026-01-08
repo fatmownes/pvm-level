@@ -6,6 +6,7 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 import javax.swing.*;
 
+import com.pvmscore.overlay.BossPointsOverlay;
 import com.pvmscore.panel.PvMPluginPanel;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
@@ -61,6 +62,8 @@ public class PvmScorePlugin extends Plugin
 	@Inject
 	SpriteManager spriteManager;
 
+	BossPointsOverlay bossPointsOverlay;
+
 	private PvMPluginPanel pvmPluginPanel;
 	private NavigationButton navButton;
 
@@ -72,6 +75,8 @@ public class PvmScorePlugin extends Plugin
 	public static final String GREEN = "00ff00";
 	public static final String RED = "ff0000";
 	public static final String ORANGE = "ff9040";
+
+	private int tickCount = -1;
 
 	@Override
 	protected void startUp() throws Exception
@@ -91,6 +96,9 @@ public class PvmScorePlugin extends Plugin
 				.panel(pvmPluginPanel)
 				.build();
 
+		bossPointsOverlay = new BossPointsOverlay(client);
+
+		overlayManager.add(bossPointsOverlay);
 		clientToolbar.addNavigation(navButton);
 	}
 
@@ -98,6 +106,7 @@ public class PvmScorePlugin extends Plugin
 	protected void shutDown() throws Exception
 	{
 		menuManager.get().removePlayerMenuItem(MENU_TITLE);
+		overlayManager.add(bossPointsOverlay);
 //		pvmPluginPanel.deinit();
 	}
 
@@ -246,8 +255,25 @@ public class PvmScorePlugin extends Plugin
 
 		}
 		previousPlayerSet = curr;
-
 		playerManager.processLookups();
+
+		if (tickCount >= 0) {
+			tickCount++;
+		}
+
+		for (NPC npc : client.getNpcs())
+		{
+			if (npc.isDead())
+			{
+				bossPointsOverlay.notifyKill(npc);
+				tickCount = 0; //tells us to start counting.
+			} else {
+				if (tickCount >= 3) {
+					bossPointsOverlay.notifyNotKill();
+					tickCount = -1;
+				}
+			}
+		}
 	}
 
 	@Provides

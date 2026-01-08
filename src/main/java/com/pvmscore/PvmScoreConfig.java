@@ -4,16 +4,17 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
-@ConfigGroup("example")
+@ConfigGroup("pvmscore")
 public interface PvmScoreConfig extends Config
 {
 	@ConfigItem(
-		keyName = "greeting",
-		name = "Welcome Greeting",
-		description = "The message to show to the user when they login"
+		keyName = "enablePointDrop",
+		name = "Enable Point Drops",
+		description = "Enables point drops when bosses are killed.",
+		position = 0
 	)
-	default String greeting()
+	default boolean enablePointDrop()
 	{
-		return "Hello";
+		return true;
 	}
 }

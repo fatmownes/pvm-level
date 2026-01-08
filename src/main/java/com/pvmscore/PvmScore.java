@@ -12,33 +12,33 @@ import static net.runelite.client.hiscore.HiscoreSkill.*;
 public class PvmScore
 {
 
-    static final int GRAND_MASTER_POINTS = 50;
-    static final int HARD_MODE_RAIDS_POINTS = 25;
-    static final int RAIDS_POINTS = 10;
-    static final int MASTER_POINTS = 5;
-    static final int ELITE_POINTS = 3;
-    static final int HARD_POINTS = 2;
-    static final int DEFAULT_POINTS = 1;
+    public static final int GRAND_MASTER_POINTS = 50;
+    public static final int HARD_MODE_RAIDS_POINTS = 25;
+    public static final int RAIDS_POINTS = 10;
+    public static final int MASTER_POINTS = 5;
+    public static final int ELITE_POINTS = 3;
+    public static final int HARD_POINTS = 2;
+    public static final int DEFAULT_POINTS = 1;
 
-    static final int DIVISOR = 100;
+    public static final int DIVISOR = 100;
 
     //50 pts
-    private static final List<HiscoreSkill> GRAND_MASTER_BOSSES = ImmutableList.of(
+    public static final List<HiscoreSkill> GRAND_MASTER_BOSSES = ImmutableList.of(
             TZKAL_ZUK, SOL_HEREDIT
     );
 
     //25 pts
-    private static final List<HiscoreSkill> HARD_MODE_RAIDS = ImmutableList.of(
+    public static final List<HiscoreSkill> HARD_MODE_RAIDS = ImmutableList.of(
             CHAMBERS_OF_XERIC_CHALLENGE_MODE, THEATRE_OF_BLOOD_HARD_MODE, TOMBS_OF_AMASCUT_EXPERT
     );
 
     //10 pts
-    private static final List<HiscoreSkill> RAIDS = ImmutableList.of(
+    public static final List<HiscoreSkill> RAIDS = ImmutableList.of(
             CHAMBERS_OF_XERIC, THEATRE_OF_BLOOD, TOMBS_OF_AMASCUT
     );
 
     //5 pts
-    private static final List<HiscoreSkill> MASTER_BOSSES = ImmutableList.of(
+    public static final List<HiscoreSkill> MASTER_BOSSES = ImmutableList.of(
             TZTOK_JAD, // being included here because of time? Maybe move up.
             THE_WHISPERER,
             DUKE_SUCELLUS,
@@ -52,7 +52,7 @@ public class PvmScore
     );
 
     //3 pts
-    private static final List<HiscoreSkill> ELITE_BOSSES = ImmutableList.of(
+    public static final List<HiscoreSkill> ELITE_BOSSES = ImmutableList.of(
             CALLISTO,
             VENENATIS,
             VETION,
@@ -64,14 +64,14 @@ public class PvmScore
     );
 
     //2 pts
-    private static final List<HiscoreSkill> HARD_BOSSES = ImmutableList.of(
+    public static final List<HiscoreSkill> HARD_BOSSES = ImmutableList.of(
             ZULRAH,
             VORKATH,
             ALCHEMICAL_HYDRA
     );
 
     //1 pt
-    private static final List<HiscoreSkill> BOSSES = ImmutableList.of(
+    public static final List<HiscoreSkill> BOSSES = ImmutableList.of(
             ABYSSAL_SIRE, AMOXLIATL, ARTIO, BARROWS_CHESTS,
             BRYOPHYTA, CALVARION, CERBERUS,
             CHAOS_ELEMENTAL, CHAOS_FANATIC, COMMANDER_ZILYANA, CRAZY_ARCHAEOLOGIST, DAGANNOTH_PRIME,
@@ -85,6 +85,11 @@ public class PvmScore
             THE_ROYAL_TITANS, THERMONUCLEAR_SMOKE_DEVIL, WINTERTODT,
             ZALCANO
     );
+
+    public static final List<List<HiscoreSkill>> ALL = List.of(
+            GRAND_MASTER_BOSSES,
+            HARD_MODE_RAIDS, RAIDS, MASTER_BOSSES,
+            ELITE_BOSSES, HARD_BOSSES, BOSSES);
 
 
     public static int getScore(Map<HiscoreSkill, Integer> kcs, int divisor) {
