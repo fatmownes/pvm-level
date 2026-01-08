@@ -22,6 +22,8 @@ public class PvMPluginPanel extends PluginPanel {
     public final static String NO_PLAYER_SELECTED_LEVEL = "Score: ?";
     public final static String NO_PLAYER_SELECTED_KC = "Total kills: ?";
 
+    private static final String LOADING_TEXT = "loading...";
+
     private GridBagConstraints c;
     private JPanel bossPanels;
     private JPanel topThreePanel;
@@ -112,6 +114,12 @@ public class PvMPluginPanel extends PluginPanel {
                 .addGap(10)
                 .addComponent(bossPanels)
         );
+    }
+
+    public void loading(String playerName) {
+        header.nameLabel.setText("Player: " + playerName);
+        header.scoreLabel.setText("Score: " + LOADING_TEXT);
+        header.totalKcLabel.setText("Total kills: " + LOADING_TEXT);
     }
 
     public void update(String playerName)

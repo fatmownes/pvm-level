@@ -190,7 +190,7 @@ public class PlayerManager {
             return calculatedLevel;
         }
 
-        private CompletableFuture<HiscoreResult> fetchPlayerKC()
+        synchronized public CompletableFuture<HiscoreResult> fetchPlayerKC()
         {
             long start = System.currentTimeMillis();
 

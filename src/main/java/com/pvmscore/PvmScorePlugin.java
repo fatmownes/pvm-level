@@ -117,7 +117,24 @@ public class PvmScorePlugin extends Plugin
 
 			String target = Text.sanitize(Text.removeTags(event.getMenuEntry().getTarget()));
 
-			pvmPluginPanel.update(target.substring(0, target.indexOf("(score-")).trim());
+			// second, unrelated TODO, how do we make it more compelling for users to
+			// want to increase THEIR score? Can we add it somewhere?
+			// maybe this is in the form of a second panel that breaks down the score.
+
+			// TODO another idea: score pop up when you kill a boss! make the number of points scroll up on the screen
+			// similar to an xp drop.
+
+			String playerName = target.substring(0, target.indexOf("(score-")).trim();
+
+			if (!playerManager.getPlayer(playerName).hasFetchedKcs()) {
+
+				pvmPluginPanel.loading(playerName);
+				playerManager.getPlayer(playerName).fetchPlayerKC().whenComplete((result, error) -> {
+					pvmPluginPanel.update(playerName);
+				});
+			} else {
+				pvmPluginPanel.update(playerName);
+			}
 		}
 
 	}
