@@ -14,6 +14,7 @@ import net.runelite.api.events.*;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
+import net.runelite.client.events.NpcLootReceived;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreClient;
 import net.runelite.client.menus.MenuManager;
@@ -82,8 +83,6 @@ public class PvmScorePlugin extends Plugin
 	public static final String ORANGE = "ff9040";
 
 	private int tickCount = -1;
-
-	private final Set<Integer> processedNpcIndices = new HashSet<>();
 
 	@Override
 	protected void startUp() throws Exception
@@ -266,6 +265,14 @@ public class PvmScorePlugin extends Plugin
 		playerManager.processLookups();
 	}
 
+	@Subscribe
+	public void onNpcLootReceived(NpcLootReceived event)
+	{
+		bossPointsOverlay.notifyKill(event.getNpc());
+		tickCount = 0;
+	}
+
+
 	private void handleNpc() {
 		if (tickCount >= 0) {
 			tickCount++;
@@ -273,23 +280,6 @@ public class PvmScorePlugin extends Plugin
 			if (tickCount >= 3) {
 				bossPointsOverlay.notifyNotKill();
 				tickCount = -1;
-				processedNpcIndices.clear();
-			}
-		}
-
-		for (NPC npc : client.getTopLevelWorldView().npcs())
-		{
-			if (npc.isDead())
-			{
-				int npcIndex = npc.getIndex();
-
-				// Only process this NPC once
-				if (!processedNpcIndices.contains(npcIndex))
-				{
-					processedNpcIndices.add(npcIndex);
-					bossPointsOverlay.notifyKill(npc);
-					tickCount = 0;
-				}
 			}
 		}
 	}

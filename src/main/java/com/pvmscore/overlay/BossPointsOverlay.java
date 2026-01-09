@@ -6,28 +6,23 @@ import net.runelite.api.NPC;
 import net.runelite.api.Point;
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.ui.ColorScheme;
-import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayUtil;
-import net.runelite.client.util.ColorUtil;
 
 import java.awt.*;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.pvmscore.PvmScore.DEFAULT_POINTS;
-import static com.pvmscore.PvmScore.HARD_POINTS;
 
 public class BossPointsOverlay extends Overlay {
 
-    boolean rendering = false;
     private int points = -1;
     private int yOffset = 0;  // Track vertical offset
     private static final int MOVE_SPEED = 2;  // Pixels to move up per render
 
-    private final boolean testing = true;
+    private final boolean testing = false;
     private final Client client;
 
     public BossPointsOverlay(Client client) {
