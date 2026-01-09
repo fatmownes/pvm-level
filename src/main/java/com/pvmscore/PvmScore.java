@@ -6,6 +6,7 @@ import net.runelite.client.hiscore.HiscoreSkill;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static net.runelite.client.hiscore.HiscoreSkill.*;
 
@@ -20,7 +21,15 @@ public class PvmScore
     public static final int HARD_POINTS = 2;
     public static final int DEFAULT_POINTS = 1;
 
-    public static final int DIVISOR = 100;
+    public static final List<Integer> POINT_VALUES = List.of(GRAND_MASTER_POINTS,
+            HARD_MODE_RAIDS_POINTS,
+            RAIDS_POINTS,
+            MASTER_POINTS,
+            ELITE_POINTS,
+            HARD_POINTS,
+            DEFAULT_POINTS);
+
+    public static final int DIVISOR = 1;
 
     //50 pts
     public static final List<HiscoreSkill> GRAND_MASTER_BOSSES = ImmutableList.of(
@@ -86,11 +95,32 @@ public class PvmScore
             ZALCANO
     );
 
+    private static final Map<List<HiscoreSkill>, Integer> BOSS_LIST_TO_POINT_MAP =
+            Map.of(GRAND_MASTER_BOSSES, GRAND_MASTER_POINTS,
+                    HARD_MODE_RAIDS, HARD_MODE_RAIDS_POINTS,
+                    RAIDS, RAIDS_POINTS,
+                    MASTER_BOSSES, MASTER_POINTS,
+                    ELITE_BOSSES, ELITE_POINTS,
+                    HARD_BOSSES, HARD_POINTS,
+                    BOSSES, DEFAULT_POINTS
+            );
+
     public static final List<List<HiscoreSkill>> ALL = List.of(
             GRAND_MASTER_BOSSES,
-            HARD_MODE_RAIDS, RAIDS, MASTER_BOSSES,
+            HARD_MODE_RAIDS,
+            RAIDS,
+            MASTER_BOSSES,
             ELITE_BOSSES, HARD_BOSSES, BOSSES);
 
+    public static Map<HiscoreSkill, Integer> FULL_POINT_MAPPINGS;
+
+    static {
+
+        FULL_POINT_MAPPINGS = BOSS_LIST_TO_POINT_MAP.entrySet().stream()
+                .flatMap(entry -> entry.getKey().stream()
+                        .map(boss -> Map.entry(boss, entry.getValue())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 
     public static int getScore(Map<HiscoreSkill, Integer> kcs, int divisor) {
         AtomicInteger score = new AtomicInteger();

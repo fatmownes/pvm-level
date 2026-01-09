@@ -1,5 +1,6 @@
 package com.pvmscore.panel;
 
+import com.pvmscore.PvmScore;
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -23,7 +24,11 @@ public class BossPanel extends PluginPanel {
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
 
-        JLabel boss = new JLabel(StringUtils.capitalize(hiscoreSkill.getName().toLowerCase()));
+        String bossLabel = StringUtils.capitalize(hiscoreSkill.getName().toLowerCase());
+        bossLabel += " (" + PvmScore.FULL_POINT_MAPPINGS.get(hiscoreSkill)
+                + (PvmScore.FULL_POINT_MAPPINGS.get(hiscoreSkill) > 1 ? "pts" : "pt") + ")";
+
+        JLabel boss = new JLabel(bossLabel);
         boss.setFont(FontManager.getRunescapeSmallFont());
         boss.setForeground(Color.GRAY);
         String kcFormatted = QuantityFormatter.quantityToStackSize(kc);

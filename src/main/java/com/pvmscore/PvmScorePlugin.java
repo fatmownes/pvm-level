@@ -194,7 +194,7 @@ public class PvmScorePlugin extends Plugin
 		return s;
 	}
 
-	// TOOD move me to the player manager probably.
+	// TODO move me to the player manager probably.
 	private String colorLevelCompare(PlayerManager.PlayerStat playerStat) {
 		String color = "";
 

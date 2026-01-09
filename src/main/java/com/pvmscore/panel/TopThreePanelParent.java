@@ -30,7 +30,7 @@ public class TopThreePanelParent extends PluginPanel
         int kc1;
         int kc2;
         int kc3;
-
+        // TODO fix this to display for people with less than 3 bosses.
         if (playerStat == null || !playerStat.hasFetchedKcs() || playerStat.getSorted().size() < 3) {
             hs1 = null;
             hs2 = null;

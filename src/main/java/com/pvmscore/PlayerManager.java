@@ -152,7 +152,7 @@ public class PlayerManager {
                 return "?";
             }
 
-            return String.valueOf(calculateLevel());
+            return String.valueOf(calculateScore());
         }
 
         public String getTotalKc() {
@@ -180,7 +180,7 @@ public class PlayerManager {
 
         }
 
-        private int calculateLevel() {
+        private int calculateScore() {
             if (calculatedLevel != -1) {
                 return this.calculatedLevel;
             }
@@ -212,7 +212,8 @@ public class PlayerManager {
                             }
                         });
 
-                    calculateLevel();
+                    calculateScore();
+                    getSorted();
                     hasFetchedKcs = true;
                     long end = System.currentTimeMillis();
                     log.debug("Hiscore Fetch took {} seconds for {}.", (end - start) / 1000, player.getName());

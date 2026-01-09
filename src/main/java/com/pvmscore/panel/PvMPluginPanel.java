@@ -140,7 +140,6 @@ public class PvMPluginPanel extends PluginPanel {
             this.header.totalKcLabel.setText("Total kills: " + playerStat.getTotalKc());
         }
 
-
         SwingUtilities.invokeLater(() ->
                 {
                     removeAll();
