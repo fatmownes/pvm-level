@@ -112,7 +112,7 @@ public class PvmScorePlugin extends Plugin
 	protected void shutDown() throws Exception
 	{
 		menuManager.get().removePlayerMenuItem(MENU_TITLE);
-		overlayManager.add(bossPointsOverlay);
+		overlayManager.remove(bossPointsOverlay);
 	}
 
 	@Subscribe

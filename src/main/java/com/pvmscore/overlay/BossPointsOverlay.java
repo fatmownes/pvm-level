@@ -53,7 +53,6 @@ public class BossPointsOverlay extends Overlay {
 
     public void notifyNotKill() {
         points = -1;
-//        yOffset = 0;  // Reset offset
     }
 
     public void notifyKill(NPC npc) {
@@ -69,7 +68,7 @@ public class BossPointsOverlay extends Overlay {
         for (List<HiscoreSkill> bosses: PvmScore.ALL) {
             bosses.forEach(boss -> {
                 if (boss.getName().equals(npc.getName())) {
-                    pts.set(DEFAULT_POINTS);
+                    pts.set(PvmScore.FULL_POINT_MAPPINGS.get(boss));
                     found.set(true);
                 }
             });

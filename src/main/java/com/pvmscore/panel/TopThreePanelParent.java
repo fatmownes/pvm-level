@@ -1,6 +1,7 @@
 package com.pvmscore.panel;
 
 import com.pvmscore.PlayerManager;
+import com.pvmscore.PvmScore;
 import net.runelite.api.gameval.SpriteID;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreSkill;
@@ -74,7 +75,8 @@ public class TopThreePanelParent extends PluginPanel
             this.setLayout(layout);
 
             String bossName = (hiscoreSkill != null) ? StringUtils.capitalize(hiscoreSkill.getName().toLowerCase()) : "None";
-
+            bossName += (hiscoreSkill != null) ? " (" + PvmScore.FULL_POINT_MAPPINGS.get(hiscoreSkill)
+                    + (PvmScore.FULL_POINT_MAPPINGS.get(hiscoreSkill) > 1 ? "pts" : "pt") + ")" : "";
             JLabel boss = new JLabel(bossName);
             boss.setFont(FontManager.getRunescapeBoldFont());
             boss.setForeground(Color.GRAY);
@@ -87,6 +89,7 @@ public class TopThreePanelParent extends PluginPanel
             kcLabel.setFont(FontManager.getRunescapeFont());
             kcLabel.setToolTipText(NumberFormat.getNumberInstance(Locale.US).format(kc));
             kcLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
 
             JLabel spriteLabel = new JLabel();
 
