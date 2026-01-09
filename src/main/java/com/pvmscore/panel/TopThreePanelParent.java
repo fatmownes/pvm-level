@@ -17,6 +17,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class TopThreePanelParent extends PluginPanel
@@ -24,46 +25,33 @@ public class TopThreePanelParent extends PluginPanel
 
     TopThreePanelParent(SpriteManager spriteManager, PlayerManager.PlayerStat playerStat) {
 
-        HiscoreSkill hs1;
-        HiscoreSkill hs2;
-        HiscoreSkill hs3;
-        int kc1;
-        int kc2;
-        int kc3;
-        // TODO fix this to display for people with less than 3 bosses.
-        if (playerStat == null || !playerStat.hasFetchedKcs() || playerStat.getSorted().size() < 3) {
-            hs1 = null;
-            hs2 = null;
-            hs3 = null;
-
-            kc1 = 0;
-            kc2 = 0;
-            kc3 = 0;
-        } else {
-            hs1 = playerStat.getSorted().get(0).getKey();
-            hs2 = playerStat.getSorted().get(1).getKey();
-            hs3 = playerStat.getSorted().get(2).getKey();
-
-             kc1 = playerStat.getSorted().get(0).getValue();
-             kc2 = playerStat.getSorted().get(1).getValue();
-             kc3 = playerStat.getSorted().get(2).getValue();
-        }
-
         setBorder(new EmptyBorder(3, 3, 3, 3));
         setBackground(ColorScheme.DARK_GRAY_COLOR);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JPanel topPanel = new TopThreePanel(spriteManager, hs1, kc1);
-        JPanel middlePanel = new TopThreePanel(spriteManager, hs2, kc2);
-        JPanel bottomPanel = new TopThreePanel(spriteManager, hs3, kc3);
+        ArrayList<JPanel> panels = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
 
-        add(topPanel);
-        add(Box.createVerticalStrut(6)); // spacing
-        add(middlePanel);
-        add(Box.createVerticalStrut(6)); // spacing
-        add(bottomPanel);
-        add(Box.createVerticalStrut(12)); // spacing
+            HiscoreSkill hiscoreSkill;
+            int kc;
+
+            if (playerStat == null || !playerStat.hasFetchedKcs() || playerStat.getSorted().size() <= i) {
+                hiscoreSkill = null;
+                kc = 0;
+            } else {
+                hiscoreSkill = playerStat.getSorted().get(i).getKey();
+                kc = playerStat.getSorted().get(i).getValue();
+            }
+
+            JPanel panel = new TopThreePanel(spriteManager, hiscoreSkill, kc);
+            panels.add(panel);
+        }
+
+        panels.forEach(p -> {
+            add(p);
+            add(Box.createVerticalStrut(6)); // spacing
+        });
 
         setVisible(true);
     }
