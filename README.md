@@ -9,8 +9,7 @@ a plugin panel that displays the boss hiscores of the user you have clicked on.
 
 The score algorithm will be tweaked based off of feedback.
 
-For now, the following bosses will award the specified number of points per kill,
-and the final value will be divided by 100 and rounded down.
+For now, the following bosses will award the specified number of points per kill.
 
 ```
 50 Points: 

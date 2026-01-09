@@ -136,10 +136,6 @@ public class PvmScorePlugin extends Plugin
 
 			String target = Text.sanitize(Text.removeTags(event.getMenuEntry().getTarget()));
 
-			// TODO, how do we make it more compelling for users to
-			// want to increase THEIR score? Can we add it somewhere?
-			// maybe this is in the form of a second panel that breaks down the score.
-
 			String playerName = target.substring(0, target.indexOf("(score-")).trim();
 
 			if (!playerManager.getPlayer(playerName).hasFetchedKcs()) {
@@ -193,7 +189,6 @@ public class PvmScorePlugin extends Plugin
 		return s;
 	}
 
-	// TODO move me to the player manager probably.
 	private String colorLevelCompare(PlayerManager.PlayerStat playerStat) {
 		String color = "";
 
