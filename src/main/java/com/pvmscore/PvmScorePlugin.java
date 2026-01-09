@@ -13,6 +13,7 @@ import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreClient;
 import net.runelite.client.menus.MenuManager;
@@ -33,7 +34,8 @@ import java.util.stream.StreamSupport;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Example"
+	name = "PvM Score",
+	configName = "PvmScoreConfig"
 )
 public class PvmScorePlugin extends Plugin
 {
@@ -62,6 +64,9 @@ public class PvmScorePlugin extends Plugin
 	@Inject
 	SpriteManager spriteManager;
 
+	@Inject
+	PvmScoreConfig pvmScoreConfig;
+
 	BossPointsOverlay bossPointsOverlay;
 
 	private PvMPluginPanel pvmPluginPanel;
@@ -77,6 +82,8 @@ public class PvmScorePlugin extends Plugin
 	public static final String ORANGE = "ff9040";
 
 	private int tickCount = -1;
+
+	private final Set<Integer> processedNpcIndices = new HashSet<>();
 
 	@Override
 	protected void startUp() throws Exception
@@ -107,7 +114,11 @@ public class PvmScorePlugin extends Plugin
 	{
 		menuManager.get().removePlayerMenuItem(MENU_TITLE);
 		overlayManager.add(bossPointsOverlay);
-//		pvmPluginPanel.deinit();
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged configChanged)
+	{
 	}
 
 	@Subscribe
@@ -126,12 +137,9 @@ public class PvmScorePlugin extends Plugin
 
 			String target = Text.sanitize(Text.removeTags(event.getMenuEntry().getTarget()));
 
-			// second, unrelated TODO, how do we make it more compelling for users to
+			// TODO, how do we make it more compelling for users to
 			// want to increase THEIR score? Can we add it somewhere?
 			// maybe this is in the form of a second panel that breaks down the score.
-
-			// TODO another idea: score pop up when you kill a boss! make the number of points scroll up on the screen
-			// similar to an xp drop.
 
 			String playerName = target.substring(0, target.indexOf("(score-")).trim();
 
@@ -162,7 +170,6 @@ public class PvmScorePlugin extends Plugin
 						PlayerManager.PlayerStat playerStat = playerManager.getPlayer(playerName);
 						if (playerStat != null) {
 							menuEntry.setTarget(updateTarget(menuEntry, playerStat));
-//							menuEntry.setOption(MENU_TITLE); // TODO i think we can remove this line
 						}
 					}
 				});
@@ -209,12 +216,6 @@ public class PvmScorePlugin extends Plugin
 		return color;
 	}
 
-
-	@Subscribe
-	public void onMenuEntryAdded(MenuEntryAdded event)
-	{
-	}
-
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged gameStateChanged)
 	{
@@ -235,6 +236,14 @@ public class PvmScorePlugin extends Plugin
 			});
 		}
 
+		updateWorldPlayersState();
+
+		if (pvmScoreConfig.enablePointDrop()) {
+			handleNpc();
+		}
+	}
+
+	private void updateWorldPlayersState() {
 		IndexedObjectSet<? extends Player> players = client.getTopLevelWorldView().players();
 
 		players.forEach(player -> {
@@ -252,25 +261,34 @@ public class PvmScorePlugin extends Plugin
 				log.debug("removing player {}", p.getName());
 				playerManager.removePlayer(p);
 			});
-
 		}
 		previousPlayerSet = curr;
 		playerManager.processLookups();
+	}
 
+	private void handleNpc() {
 		if (tickCount >= 0) {
 			tickCount++;
+
+			if (tickCount >= 3) {
+				bossPointsOverlay.notifyNotKill();
+				tickCount = -1;
+				processedNpcIndices.clear();
+			}
 		}
 
-		for (NPC npc : client.getNpcs())
+		for (NPC npc : client.getTopLevelWorldView().npcs())
 		{
 			if (npc.isDead())
 			{
-				bossPointsOverlay.notifyKill(npc);
-				tickCount = 0; //tells us to start counting.
-			} else {
-				if (tickCount >= 3) {
-					bossPointsOverlay.notifyNotKill();
-					tickCount = -1;
+				int npcIndex = npc.getIndex();
+
+				// Only process this NPC once
+				if (!processedNpcIndices.contains(npcIndex))
+				{
+					processedNpcIndices.add(npcIndex);
+					bossPointsOverlay.notifyKill(npc);
+					tickCount = 0;
 				}
 			}
 		}
