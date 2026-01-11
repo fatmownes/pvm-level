@@ -33,7 +33,11 @@ public class PlayerManager {
     }
 
     public PlayerStat getLocalPlayer() {
-        return this.activeUsernameToKillList.get(localPlayer.getName());
+        if (localPlayer != null) {
+            return this.activeUsernameToKillList.get(localPlayer.getName());
+        } else {
+            return new PlayerStat(null);
+        }
     }
 
     public CompletableFuture<HiscoreResult> initLocalPlayer() {

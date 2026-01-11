@@ -96,7 +96,7 @@ public class PvmScorePlugin extends Plugin
 		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "game_icon_tzkalzuk.png");
 
 		navButton = NavigationButton.builder()
-				.tooltip("PvM-Level Panel")
+				.tooltip("PvM-Score Panel")
 				.icon(icon)
 				.priority(5)
 				.panel(pvmPluginPanel)
@@ -113,11 +113,9 @@ public class PvmScorePlugin extends Plugin
 	{
 		menuManager.get().removePlayerMenuItem(MENU_TITLE);
 		overlayManager.remove(bossPointsOverlay);
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged configChanged)
-	{
+		clientToolbar.removeNavigation(navButton);
+		navButton = null;
+		pvmPluginPanel = null;
 	}
 
 	@Subscribe
