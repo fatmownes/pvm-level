@@ -42,7 +42,7 @@ public class PlayerManager {
 
     public CompletableFuture<HiscoreResult> initLocalPlayer() {
         this.localPlayer = client.getLocalPlayer();
-        PlayerStat localPlayerStat = new PlayerStat(this.localPlayer);
+        PlayerStat localPlayerStat = new PlayerStat(this.localPlayer.getName());
 
         return localPlayerStat.fetchPlayerKC().whenComplete((result, err) -> {
 
@@ -56,30 +56,32 @@ public class PlayerManager {
         });
     }
 
-    public void addPlayer(Player player) {
+    public PlayerStat addPlayer(String player) {
 
-        if (player == null || player.getName() == null) {
-            return;
+        if (player == null) {
+            return null;
         }
 
-        if (activeUsernameToKillList.containsKey(player.getName())) {
-            return;
+        if (activeUsernameToKillList.containsKey(player)) {
+            return activeUsernameToKillList.get(player);
         }
 
         if (activeUsernameToKillList.size() > 1000) {
-            return;
+            return null;
         }
 
-        if (cachedUsernameToKillList.containsKey(player.getName())) {
-            activeUsernameToKillList.putIfAbsent(player.getName(), cachedUsernameToKillList.get(player.getName()));
-            cachedUsernameToKillList.remove(player.getName());
+        if (cachedUsernameToKillList.containsKey(player)) {
+            activeUsernameToKillList.putIfAbsent(player, cachedUsernameToKillList.get(player));
+            return cachedUsernameToKillList.remove(player);
         } else {
             PlayerStat ps = new PlayerStat(player);
-            activeUsernameToKillList.putIfAbsent(player.getName(), ps);
+            activeUsernameToKillList.putIfAbsent(player, ps);
             this.kcLookupQueue.offer(ps);
+            return ps;
         }
     }
 
+    // TODO refactor to a string?
     public void removePlayer(Player player) {
         String name =  Objects.requireNonNull(player.getName());
         PlayerStat stats = activeUsernameToKillList.remove(name);
@@ -108,7 +110,7 @@ public class PlayerManager {
     public class PlayerStat
     {
         @Getter
-        private final Player player;
+        private final String player;
 
         @Getter
         private final Map<HiscoreSkill, Integer> killCounts;
@@ -123,7 +125,7 @@ public class PlayerManager {
         private List<Map.Entry<HiscoreSkill, Integer>> sortedByKc;
         private List<Map.Entry<HiscoreSkill, Integer>> sortedByScore;
 
-        PlayerStat(Player player) {
+        PlayerStat(String player) {
             this.player = player;
             this.killCounts = new HashMap<>();
             this.pointCounts = new HashMap<>(); // because its convenient to look these up later by Hiscore.
@@ -228,13 +230,13 @@ public class PlayerManager {
         {
             long start = System.currentTimeMillis();
 
-            log.debug("Attempting to fetch KC's for player {}", player.getName());
+            log.debug("Attempting to fetch KC's for player {}", player);
 
-            return hiscoreClient.lookupAsync(player.getName(), HiscoreEndpoint.NORMAL)
+            return hiscoreClient.lookupAsync(player, HiscoreEndpoint.NORMAL)
                     .whenComplete((result, err) -> {
 
                         if (err != null) {
-                            log.error("Error fetching Kc's for {}", player.getName());
+                            log.error("Error fetching Kc's for {}", player);
                             return;
                         }
 
@@ -250,7 +252,7 @@ public class PlayerManager {
                     getSortedByKC();
                     hasFetchedKcs = true;
                     long end = System.currentTimeMillis();
-                    log.debug("Hiscore Fetch took {} seconds for {}.", (end - start) / 1000, player.getName());
+                    log.debug("Hiscore Fetch took {} seconds for {}.", (end - start) / 1000, player);
                 });
         }
 

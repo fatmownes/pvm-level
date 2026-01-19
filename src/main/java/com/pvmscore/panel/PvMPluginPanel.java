@@ -2,16 +2,20 @@ package com.pvmscore.panel;
 
 import com.pvmscore.PlayerManager;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.Client;
 import net.runelite.api.Player;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
+import net.runelite.client.ui.components.IconTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +52,8 @@ public class PvMPluginPanel extends PluginPanel {
     private String currentSort = SORT_BY_PTS;
 
     private PlayerManager.PlayerStat currentPlayer = null;
+    private IconTextField searchBar;
+    private boolean loading = false;
 
     public void init(PlayerManager playerManager, SpriteManager spriteManager) {
         this.playerManager = playerManager;
@@ -81,10 +87,10 @@ public class PvMPluginPanel extends PluginPanel {
         resetToSelf.setFont(FontManager.getRunescapeFont());
         resetToSelf.setText("Reset to Me");
         resetToSelf.addActionListener(e -> {
-            Player localPlayer = playerManager.getLocalPlayer().getPlayer();
+            String localPlayer = playerManager.getLocalPlayer().getPlayer();
 
             if (localPlayer != null) {
-                update(localPlayer.getName());
+                update(localPlayer);
             }
         });
 
@@ -96,12 +102,15 @@ public class PvMPluginPanel extends PluginPanel {
             sortByKc = !sortByKc;
 
             if (currentPlayer != null) {
-                update(currentPlayer.getPlayer().getName());
+                update(currentPlayer.getPlayer());
             }
         });
 
         header.add(resetToSelf);
         header.add(sort);
+
+        initSearchBar();
+        header.add(searchBar);
 
         setLayout();
     }
@@ -109,6 +118,46 @@ public class PvMPluginPanel extends PluginPanel {
     public PvMPluginPanel()
     {
 
+    }
+
+    private void initSearchBar() {
+        searchBar = new IconTextField();
+        searchBar.setIcon(IconTextField.Icon.SEARCH);
+        searchBar.setEditable(true);
+        searchBar.setPreferredSize(new Dimension(PluginPanel.PANEL_WIDTH - 20, 30));
+        searchBar.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        searchBar.setHoverBackgroundColor(ColorScheme.DARK_GRAY_HOVER_COLOR);
+        searchBar.setMinimumSize(new Dimension(0, 30));
+        searchBar.addActionListener(e -> {
+            playerManager.addPlayer(searchBar.getText()).fetchPlayerKC()
+                    .whenComplete((r, throwable) ->
+                            update(searchBar.getText())
+            );
+        });
+        searchBar.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                if (e.getClickCount() != 2)
+                {
+                    return;
+                }
+
+                playerManager.addPlayer(searchBar.getText()).fetchPlayerKC()
+                        .whenComplete((r, throwable) -> {
+                    update(searchBar.getText());
+                });
+            }
+        });
+        searchBar.addClearListener(() ->
+        {
+            searchBar.setIcon(IconTextField.Icon.SEARCH);
+            searchBar.setEditable(true);
+            loading = false;
+        });
+
+//        add(searchBar, c);
     }
 
     private void setLayout() {
@@ -139,14 +188,23 @@ public class PvMPluginPanel extends PluginPanel {
     }
 
     public void loading(String playerName) {
+        loading = true;
         header.nameLabel.setText("Player: " + playerName);
         header.scoreLabel.setText("Score: " + LOADING_TEXT);
         header.totalKcLabel.setText("Total kills: " + LOADING_TEXT);
     }
 
+    public void clearSearchBar() {
+        SwingUtilities.invokeLater(() -> {
+            this.searchBar.setText("");
+        });
+    }
+
     public void update(String playerName)
     {
+        loading = false;
         PlayerManager.PlayerStat playerStat;
+
         if (playerName.isEmpty() || playerName == null)
         {
             this.header.nameLabel.setText(NO_PLAYER_SELECTED);

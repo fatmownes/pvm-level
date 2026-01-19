@@ -145,6 +145,7 @@ public class PvmScorePlugin extends Plugin
 			} else {
 				pvmPluginPanel.update(playerName);
 			}
+			pvmPluginPanel.clearSearchBar();
 		}
 
 	}
@@ -224,7 +225,7 @@ public class PvmScorePlugin extends Plugin
 		if (firstTick) {
 			firstTick = false;
 			playerManager.initLocalPlayer().whenComplete((result, ignore) -> {
-				pvmPluginPanel.update(Text.sanitize(playerManager.getLocalPlayer().getPlayer().getName()));
+				pvmPluginPanel.update(Text.sanitize(playerManager.getLocalPlayer().getPlayer()));
 			});
 		}
 
@@ -239,7 +240,7 @@ public class PvmScorePlugin extends Plugin
 		IndexedObjectSet<? extends Player> players = client.getTopLevelWorldView().players();
 
 		players.forEach(player -> {
-			playerManager.addPlayer(player);
+			playerManager.addPlayer(player.getName());
 		});
 
 		Set<Player> curr = StreamSupport.stream(players.stream().spliterator(), false).collect(Collectors.toSet());
