@@ -152,16 +152,20 @@ public class PvMPluginPanel extends PluginPanel {
             this.header.nameLabel.setText(NO_PLAYER_SELECTED);
             this.header.scoreLabel.setText(NO_PLAYER_SELECTED_LEVEL);
             this.header.totalKcLabel.setText(NO_PLAYER_SELECTED_KC);
+            currentPlayer = null;
             return;
         }
         else
         {
             playerStat = playerManager.getPlayer(playerName);
 
-            currentPlayer = playerStat;
+            if (currentPlayer == null || !currentPlayer.equals(playerStat)) {
+                currentPlayer = playerStat;
+            }
+
             this.header.nameLabel.setText("Player: " + playerName);
-            this.header.scoreLabel.setText("Score: " + playerStat.getLevel());
-            this.header.totalKcLabel.setText("Total kills: " + playerStat.getTotalKc());
+            this.header.scoreLabel.setText("Score: " + currentPlayer.getLevel());
+            this.header.totalKcLabel.setText("Total kills: " + currentPlayer.getTotalKc());
             currentPlayer.getSortedByKC(); //init
             currentPlayer.getSortedByScore(); //init
         }
@@ -171,9 +175,9 @@ public class PvMPluginPanel extends PluginPanel {
                     removeAll();
                     bossPanels.removeAll();
 
-                    raidsPanel = new RaidsPanelParent(spriteManager, playerStat, false, sortByKc);
-                    hardModeRaidsPanel = new RaidsPanelParent(spriteManager, playerStat, true, sortByKc);
-                    gmPanel = new GMPanelParent(spriteManager, playerStat);
+                    raidsPanel = new RaidsPanelParent(spriteManager, currentPlayer, false, sortByKc);
+                    hardModeRaidsPanel = new RaidsPanelParent(spriteManager, currentPlayer, true, sortByKc);
+                    gmPanel = new GMPanelParent(spriteManager, currentPlayer);
 
                     List<Map.Entry<HiscoreSkill, Integer>> sorted;
 
@@ -181,16 +185,16 @@ public class PvMPluginPanel extends PluginPanel {
                     if (sortByKc) {
                         sort.setText(SORT_BY_PTS);
 
-                        sorted = playerStat.getSortedByKC();
-                        topThreePanel = new TopThreePanelParent(spriteManager, playerStat, sorted, sortByKc);
+                        sorted = currentPlayer.getSortedByKC();
+                        topThreePanel = new TopThreePanelParent(spriteManager, currentPlayer, sorted, sortByKc);
                     } else {
                         sort.setText(SORT_BY_KC);
 
-                        sorted = playerStat.getSortedByScore();
-                        topThreePanel = new TopThreePanelParent(spriteManager, playerStat, sorted, sortByKc);
+                        sorted = currentPlayer.getSortedByScore();
+                        topThreePanel = new TopThreePanelParent(spriteManager, currentPlayer, sorted, sortByKc);
                     }
 
-                    if (playerStat.hasFetchedKcs()){
+                    if (currentPlayer.hasFetchedKcs()){
                         for (int i = 3; i < sorted.size(); i++) {
                             int currVal = sorted.get(i).getValue();
                             bossPanels.add(new BossPanel(sorted.get(i).getKey(), currVal, sortByKc), c);

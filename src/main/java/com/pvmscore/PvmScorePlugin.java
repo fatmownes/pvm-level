@@ -212,7 +212,7 @@ public class PvmScorePlugin extends Plugin
 	public void onGameStateChanged(GameStateChanged gameStateChanged)
 	{
 		//if game log in set first tick to true;
-		if (gameStateChanged.getGameState().equals(GameState.LOGGED_IN)) {
+		if (gameStateChanged.getGameState().equals(GameState.LOGIN_SCREEN)) {
 			firstTick = true;
 		}
 	}
