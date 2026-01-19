@@ -16,7 +16,7 @@ import java.util.Locale;
 
 public class BossPanel extends PluginPanel {
 
-    BossPanel(HiscoreSkill hiscoreSkill, Integer kc)
+    BossPanel(HiscoreSkill hiscoreSkill, Integer val, boolean sortByKc)
     {
         setBorder(new EmptyBorder(3, 3, 3, 3));
         setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -31,18 +31,18 @@ public class BossPanel extends PluginPanel {
         JLabel boss = new JLabel(bossLabel);
         boss.setFont(FontManager.getRunescapeSmallFont());
         boss.setForeground(Color.GRAY);
-        String kcFormatted = QuantityFormatter.quantityToStackSize(kc);
-        JLabel kcLabel = new JLabel(StringUtils.capitalize(kcFormatted));
+        String kcFormatted = QuantityFormatter.quantityToStackSize(val);
+        JLabel valLabel = new JLabel(StringUtils.capitalize(kcFormatted) + (sortByKc ? " kc" : " pts"));
 
-        kcLabel.setForeground(Color.YELLOW);
+        valLabel.setForeground(Color.YELLOW);
 
-        kcLabel.setFont(FontManager.getRunescapeFont());
-        kcLabel.setToolTipText(NumberFormat.getNumberInstance(Locale.US).format(kc));
+        valLabel.setFont(FontManager.getRunescapeFont());
+        valLabel.setToolTipText(NumberFormat.getNumberInstance(Locale.US).format(val));
 
         layout.setVerticalGroup(layout.createParallelGroup()
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(boss)
-                        .addComponent(kcLabel)
+                        .addComponent(valLabel)
                 )
 
         );
@@ -51,7 +51,7 @@ public class BossPanel extends PluginPanel {
                 .addGap(8)
                 .addGroup(layout.createParallelGroup()
                         .addComponent(boss)
-                        .addComponent(kcLabel)
+                        .addComponent(valLabel)
                 )
         );
 

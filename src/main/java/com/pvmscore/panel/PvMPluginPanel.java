@@ -12,6 +12,7 @@ import net.runelite.client.ui.PluginPanel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,14 @@ public class PvMPluginPanel extends PluginPanel {
     private GroupLayout layout;
 
     private JButton resetToSelf;
+    private JButton sort;
+    private boolean sortByKc = false;
+    private static final String SORT_BY_KC = "Sort by KC";
+    private static final String SORT_BY_PTS = "Sort by Points";
+
+    private String currentSort = SORT_BY_PTS;
+
+    private PlayerManager.PlayerStat currentPlayer = null;
 
     public void init(PlayerManager playerManager, SpriteManager spriteManager) {
         this.playerManager = playerManager;
@@ -49,13 +58,13 @@ public class PvMPluginPanel extends PluginPanel {
         setBorder(new EmptyBorder(10, 10, 10, 10));
         setBackground(ColorScheme.DARK_GRAY_COLOR);
 
-        this.raidsPanel = new RaidsPanelParent(spriteManager, null, false);
+        this.raidsPanel = new RaidsPanelParent(spriteManager, null, false, sortByKc);
 
         this.gmPanel = new GMPanelParent(spriteManager, null);
 
-        this.hardModeRaidsPanel = new RaidsPanelParent(spriteManager, null, true);
+        this.hardModeRaidsPanel = new RaidsPanelParent(spriteManager, null, true, sortByKc);
 
-        this.topThreePanel = new TopThreePanelParent(spriteManager, null);
+        this.topThreePanel = new TopThreePanelParent(spriteManager, null, Collections.EMPTY_LIST, sortByKc);
 
         this.bossPanels = new JPanel(new GridBagLayout());
 
@@ -69,8 +78,8 @@ public class PvMPluginPanel extends PluginPanel {
 
         resetToSelf = new JButton();
         resetToSelf.setBackground(ColorScheme.DARK_GRAY_COLOR);
-        resetToSelf.setFont(FontManager.getRunescapeSmallFont());
-        resetToSelf.add(new JLabel("Reset to Me"));
+        resetToSelf.setFont(FontManager.getRunescapeFont());
+        resetToSelf.setText("Reset to Me");
         resetToSelf.addActionListener(e -> {
             Player localPlayer = playerManager.getLocalPlayer().getPlayer();
 
@@ -79,7 +88,20 @@ public class PvMPluginPanel extends PluginPanel {
             }
         });
 
+        sort = new JButton();
+        sort.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        sort.setFont(FontManager.getRunescapeFont());
+        sort.setText(currentSort);
+        sort.addActionListener(e -> {
+            sortByKc = !sortByKc;
+
+            if (currentPlayer != null) {
+                update(currentPlayer.getPlayer().getName());
+            }
+        });
+
         header.add(resetToSelf);
+        header.add(sort);
 
         setLayout();
     }
@@ -135,9 +157,13 @@ public class PvMPluginPanel extends PluginPanel {
         else
         {
             playerStat = playerManager.getPlayer(playerName);
+
+            currentPlayer = playerStat;
             this.header.nameLabel.setText("Player: " + playerName);
             this.header.scoreLabel.setText("Score: " + playerStat.getLevel());
             this.header.totalKcLabel.setText("Total kills: " + playerStat.getTotalKc());
+            currentPlayer.getSortedByKC(); //init
+            currentPlayer.getSortedByScore(); //init
         }
 
         SwingUtilities.invokeLater(() ->
@@ -145,16 +171,29 @@ public class PvMPluginPanel extends PluginPanel {
                     removeAll();
                     bossPanels.removeAll();
 
-                    topThreePanel = new TopThreePanelParent(spriteManager, playerStat);
-                    raidsPanel = new RaidsPanelParent(spriteManager, playerStat, false);
-                    hardModeRaidsPanel = new RaidsPanelParent(spriteManager, playerStat, true);
+                    raidsPanel = new RaidsPanelParent(spriteManager, playerStat, false, sortByKc);
+                    hardModeRaidsPanel = new RaidsPanelParent(spriteManager, playerStat, true, sortByKc);
                     gmPanel = new GMPanelParent(spriteManager, playerStat);
 
-                    List<Map.Entry<HiscoreSkill, Integer>> sorted = playerStat.getSorted();
+                    List<Map.Entry<HiscoreSkill, Integer>> sorted;
+
+
+                    if (sortByKc) {
+                        sort.setText(SORT_BY_PTS);
+
+                        sorted = playerStat.getSortedByKC();
+                        topThreePanel = new TopThreePanelParent(spriteManager, playerStat, sorted, sortByKc);
+                    } else {
+                        sort.setText(SORT_BY_KC);
+
+                        sorted = playerStat.getSortedByScore();
+                        topThreePanel = new TopThreePanelParent(spriteManager, playerStat, sorted, sortByKc);
+                    }
+
                     if (playerStat.hasFetchedKcs()){
                         for (int i = 3; i < sorted.size(); i++) {
-                            int currKc = sorted.get(i).getValue();
-                            bossPanels.add(new BossPanel(sorted.get(i).getKey(), currKc), c);
+                            int currVal = sorted.get(i).getValue();
+                            bossPanels.add(new BossPanel(sorted.get(i).getKey(), currVal, sortByKc), c);
                             c.gridy++;
                         }
                         header.revalidate();

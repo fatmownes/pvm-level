@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class RaidsPanelParent extends PluginPanel {
 
-    RaidsPanelParent(SpriteManager spriteManager, PlayerManager.PlayerStat playerStat, boolean hardMode) {
+    RaidsPanelParent(SpriteManager spriteManager, PlayerManager.PlayerStat playerStat, boolean hardMode, boolean sortByKc) {
 
         setBorder(new EmptyBorder(3, 3, 3, 3));
 
@@ -36,13 +36,13 @@ public class RaidsPanelParent extends PluginPanel {
         JPanel middlePanel;
         JPanel bottomPanel;
         if (hardMode) {
-            topPanel = new RaidsPanel(spriteManager, HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE, getHardModeKcs(playerStat).get(HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE), true);
-            middlePanel = new RaidsPanel(spriteManager, HiscoreSkill.THEATRE_OF_BLOOD_HARD_MODE, getHardModeKcs(playerStat).get(HiscoreSkill.THEATRE_OF_BLOOD_HARD_MODE), true);
-            bottomPanel = new RaidsPanel(spriteManager, HiscoreSkill.TOMBS_OF_AMASCUT_EXPERT, getHardModeKcs(playerStat).get(HiscoreSkill.TOMBS_OF_AMASCUT_EXPERT), true);
+            topPanel = new RaidsPanel(spriteManager, HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE, getHardModeKcs(playerStat, sortByKc).get(HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE), true, sortByKc);
+            middlePanel = new RaidsPanel(spriteManager, HiscoreSkill.THEATRE_OF_BLOOD_HARD_MODE, getHardModeKcs(playerStat, sortByKc).get(HiscoreSkill.THEATRE_OF_BLOOD_HARD_MODE), true, sortByKc);
+            bottomPanel = new RaidsPanel(spriteManager, HiscoreSkill.TOMBS_OF_AMASCUT_EXPERT, getHardModeKcs(playerStat, sortByKc).get(HiscoreSkill.TOMBS_OF_AMASCUT_EXPERT), true, sortByKc);
         } else {
-            topPanel = new RaidsPanel(spriteManager, HiscoreSkill.CHAMBERS_OF_XERIC, getRaidsKc(playerStat).get(HiscoreSkill.CHAMBERS_OF_XERIC), false);
-            middlePanel = new RaidsPanel(spriteManager, HiscoreSkill.THEATRE_OF_BLOOD, getRaidsKc(playerStat).get(HiscoreSkill.THEATRE_OF_BLOOD), false);
-            bottomPanel = new RaidsPanel(spriteManager, HiscoreSkill.TOMBS_OF_AMASCUT, getRaidsKc(playerStat).get(HiscoreSkill.TOMBS_OF_AMASCUT), false);
+            topPanel = new RaidsPanel(spriteManager, HiscoreSkill.CHAMBERS_OF_XERIC, getRaidsKc(playerStat, sortByKc).get(HiscoreSkill.CHAMBERS_OF_XERIC), false, sortByKc);
+            middlePanel = new RaidsPanel(spriteManager, HiscoreSkill.THEATRE_OF_BLOOD, getRaidsKc(playerStat, sortByKc).get(HiscoreSkill.THEATRE_OF_BLOOD), false, sortByKc);
+            bottomPanel = new RaidsPanel(spriteManager, HiscoreSkill.TOMBS_OF_AMASCUT, getRaidsKc(playerStat, sortByKc).get(HiscoreSkill.TOMBS_OF_AMASCUT), false, sortByKc);
         }
 
         add(topPanel);
@@ -54,27 +54,36 @@ public class RaidsPanelParent extends PluginPanel {
         setVisible(true);
     }
 
-    private Map<HiscoreSkill, Integer> getHardModeKcs(PlayerManager.PlayerStat playerStat) {
+    private Map<HiscoreSkill, Integer> getHardModeKcs(PlayerManager.PlayerStat playerStat, boolean sortByKc) {
         Map<HiscoreSkill, Integer> result = new HashMap<>();
-        result.put(HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE, playerStat == null ? 0 : playerStat.getKillCounts().getOrDefault(HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE, 0));
-        result.put(HiscoreSkill.THEATRE_OF_BLOOD_HARD_MODE, playerStat == null ? 0 : playerStat.getKillCounts().getOrDefault(HiscoreSkill.THEATRE_OF_BLOOD_HARD_MODE, 0));
-        result.put(HiscoreSkill.TOMBS_OF_AMASCUT_EXPERT, playerStat == null ? 0 : playerStat.getKillCounts().getOrDefault(HiscoreSkill.TOMBS_OF_AMASCUT_EXPERT, 0));
+        result.put(HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE,
+                playerStat == null ? 0 : (sortByKc ? playerStat.getKillCounts() : playerStat.getPointCounts()).getOrDefault(HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE, 0)
+        );
+        result.put(HiscoreSkill.THEATRE_OF_BLOOD_HARD_MODE,
+                playerStat == null ? 0 : (sortByKc ? playerStat.getKillCounts() : playerStat.getPointCounts()).getOrDefault(HiscoreSkill.THEATRE_OF_BLOOD_HARD_MODE, 0)
+        );
+        result.put(HiscoreSkill.TOMBS_OF_AMASCUT_EXPERT,
+                playerStat == null ? 0 : (sortByKc ? playerStat.getKillCounts() : playerStat.getPointCounts()).getOrDefault(HiscoreSkill.TOMBS_OF_AMASCUT_EXPERT, 0)
+        );
 
         return result;
     }
 
-    private Map<HiscoreSkill, Integer> getRaidsKc(PlayerManager.PlayerStat playerStat) {
+    private Map<HiscoreSkill, Integer> getRaidsKc(PlayerManager.PlayerStat playerStat, boolean sortByKc) {
         Map<HiscoreSkill, Integer> result = new HashMap<>();
-        result.put(HiscoreSkill.CHAMBERS_OF_XERIC, playerStat == null ? 0 : playerStat.getKillCounts().getOrDefault(HiscoreSkill.CHAMBERS_OF_XERIC, 0));
-        result.put(HiscoreSkill.THEATRE_OF_BLOOD, playerStat == null ? 0 : playerStat.getKillCounts().getOrDefault(HiscoreSkill.THEATRE_OF_BLOOD, 0));
-        result.put(HiscoreSkill.TOMBS_OF_AMASCUT, playerStat == null ? 0 : playerStat.getKillCounts().getOrDefault(HiscoreSkill.TOMBS_OF_AMASCUT, 0));
+        result.put(HiscoreSkill.CHAMBERS_OF_XERIC,
+                playerStat == null ? 0 :(sortByKc ? playerStat.getKillCounts() : playerStat.getPointCounts()).getOrDefault(HiscoreSkill.CHAMBERS_OF_XERIC, 0));
+        result.put(HiscoreSkill.THEATRE_OF_BLOOD,
+                playerStat == null ? 0 : (sortByKc ? playerStat.getKillCounts() : playerStat.getPointCounts()).getOrDefault(HiscoreSkill.THEATRE_OF_BLOOD, 0));
+        result.put(HiscoreSkill.TOMBS_OF_AMASCUT,
+                playerStat == null ? 0 : (sortByKc ? playerStat.getKillCounts() : playerStat.getPointCounts()).getOrDefault(HiscoreSkill.TOMBS_OF_AMASCUT, 0));
 
         return result;
     }
 
     private class RaidsPanel extends JPanel {
 
-        public RaidsPanel(SpriteManager spriteManager, HiscoreSkill hiscoreSkill, int kc, boolean hardMode)
+        public RaidsPanel(SpriteManager spriteManager, HiscoreSkill hiscoreSkill, int val, boolean hardMode, boolean sortByKc)
         {
 
             Color borderColor;
@@ -99,14 +108,14 @@ public class RaidsPanelParent extends PluginPanel {
 
             JLabel boss = getBossLabelName(hiscoreSkill);
 
-            String kcFormatted = QuantityFormatter.quantityToStackSize(kc);
-            JLabel kcLabel = new JLabel(StringUtils.capitalize(kcFormatted));
+            String kcFormatted = QuantityFormatter.quantityToStackSize(val) + (sortByKc ? " kc" : " pts");
+            JLabel valLabel = new JLabel(StringUtils.capitalize(kcFormatted));
 
-            kcLabel.setForeground(Color.YELLOW);
+            valLabel.setForeground(Color.YELLOW);
 
-            kcLabel.setFont(FontManager.getRunescapeFont());
-            kcLabel.setToolTipText(NumberFormat.getNumberInstance(Locale.US).format(kc));
-            kcLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            valLabel.setFont(FontManager.getRunescapeFont());
+            valLabel.setToolTipText(NumberFormat.getNumberInstance(Locale.US).format(val));
+            valLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
             JLabel spriteLabel = new JLabel();
 
@@ -123,7 +132,7 @@ public class RaidsPanelParent extends PluginPanel {
                     .addGroup(layout.createSequentialGroup()
                             .addComponent(spriteLabel)
                             .addComponent(boss)
-                            .addComponent(kcLabel)
+                            .addComponent(valLabel)
                     )
             );
 
@@ -132,7 +141,7 @@ public class RaidsPanelParent extends PluginPanel {
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                             .addComponent(spriteLabel)
                             .addComponent(boss)
-                            .addComponent(kcLabel)
+                            .addComponent(valLabel)
                     )
                     .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE) // flexible left gap
             );
@@ -140,31 +149,7 @@ public class RaidsPanelParent extends PluginPanel {
 
         @Nonnull
         private JLabel getBossLabelName(HiscoreSkill hiscoreSkill) {
-            String bossName = "";
-
-            if (hiscoreSkill.equals(HiscoreSkill.CHAMBERS_OF_XERIC)) {
-                bossName = "CoX";
-            }
-
-            if (hiscoreSkill.equals(HiscoreSkill.THEATRE_OF_BLOOD)) {
-                bossName = "ToB";
-            }
-
-            if (hiscoreSkill.equals(HiscoreSkill.TOMBS_OF_AMASCUT)) {
-                bossName = "ToA";
-            }
-
-            if (hiscoreSkill.equals(HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE)) {
-                bossName = "CoX CM";
-            }
-
-            if (hiscoreSkill.equals(HiscoreSkill.THEATRE_OF_BLOOD_HARD_MODE)) {
-                bossName = "ToB HM";
-            }
-
-            if (hiscoreSkill.equals(HiscoreSkill.TOMBS_OF_AMASCUT_EXPERT)) {
-                bossName = "ToA Ex";
-            }
+            String bossName = translateName(hiscoreSkill);
 
             JLabel boss = new JLabel(bossName);
             boss.setFont(FontManager.getRunescapeBoldFont());
@@ -172,6 +157,34 @@ public class RaidsPanelParent extends PluginPanel {
             return boss;
         }
 
+    }
+
+    public static String translateName(HiscoreSkill hiscoreSkill) {
+        if (hiscoreSkill.equals(HiscoreSkill.CHAMBERS_OF_XERIC)) {
+            return  "CoX";
+        }
+
+        if (hiscoreSkill.equals(HiscoreSkill.THEATRE_OF_BLOOD)) {
+            return "ToB";
+        }
+
+        if (hiscoreSkill.equals(HiscoreSkill.TOMBS_OF_AMASCUT)) {
+            return "ToA";
+        }
+
+        if (hiscoreSkill.equals(HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE)) {
+            return "CoX CM";
+        }
+
+        if (hiscoreSkill.equals(HiscoreSkill.THEATRE_OF_BLOOD_HARD_MODE)) {
+            return "ToB HM";
+        }
+
+        if (hiscoreSkill.equals(HiscoreSkill.TOMBS_OF_AMASCUT_EXPERT)) {
+            return "ToA Ex";
+        }
+
+        return StringUtils.capitalize(hiscoreSkill.getName().toLowerCase());
     }
 
 }

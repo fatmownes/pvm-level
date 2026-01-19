@@ -112,36 +112,66 @@ public class PlayerManager {
 
         @Getter
         private final Map<HiscoreSkill, Integer> killCounts;
+        @Getter
+        private final Map<HiscoreSkill, Integer> pointCounts;
 
         private boolean hasFetchedKcs = false;
 
         private int calculatedLevel = -1;
         private int calculatedKc = -1;
 
-        private List<Map.Entry<HiscoreSkill, Integer>> sorted;
+        private List<Map.Entry<HiscoreSkill, Integer>> sortedByKc;
+        private List<Map.Entry<HiscoreSkill, Integer>> sortedByScore;
 
         PlayerStat(Player player) {
             this.player = player;
             this.killCounts = new HashMap<>();
+            this.pointCounts = new HashMap<>(); // because its convenient to look these up later by Hiscore.
         }
 
         private void addKc(HiscoreSkill boss, int kc) {
             this.killCounts.put(boss, kc);
         }
 
-        public List<Map.Entry<HiscoreSkill, Integer>> getSorted() {
+        public List<Map.Entry<HiscoreSkill, Integer>> getSortedByScore() {
+            if (!hasFetchedKcs) {
+                kcLookupQueue.offer(this);
+                return Collections.EMPTY_LIST;
+            }
+
+            if (sortedByScore == null) {
+                sortedByScore = new ArrayList<>();
+                //make a copy of kill counts so we don't mutate it.
+                Map<HiscoreSkill, Integer> copy = new HashMap<>(killCounts);
+
+                copy.entrySet().forEach((hiscore) -> {
+                    int points = hiscore.getValue() * PvmScore.FULL_POINT_MAPPINGS.get(hiscore.getKey());
+                    hiscore.setValue(points);
+                    sortedByScore.add(hiscore);
+                    pointCounts.put(hiscore.getKey(), points);
+                });
+
+                sortedByScore = sortedByScore.stream()
+                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                        .collect(Collectors.toList());
+            }
+
+            return sortedByScore;
+        }
+
+        public List<Map.Entry<HiscoreSkill, Integer>> getSortedByKC() {
 
             if (!hasFetchedKcs) {
                 kcLookupQueue.offer(this);
                 return Collections.EMPTY_LIST;
             }
 
-            if (sorted == null) {
-                sorted = killCounts.entrySet().stream()
+            if (sortedByKc == null) {
+                sortedByKc = killCounts.entrySet().stream()
                         .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                         .collect(Collectors.toList());
             }
-            return sorted;
+            return sortedByKc;
         }
 
         public boolean hasFetchedKcs() {
@@ -217,7 +247,7 @@ public class PlayerManager {
                         });
 
                     calculateScore();
-                    getSorted();
+                    getSortedByKC();
                     hasFetchedKcs = true;
                     long end = System.currentTimeMillis();
                     log.debug("Hiscore Fetch took {} seconds for {}.", (end - start) / 1000, player.getName());

@@ -19,12 +19,16 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
+import static com.pvmscore.panel.RaidsPanelParent.translateName;
 
 public class TopThreePanelParent extends PluginPanel
 {
 
-    TopThreePanelParent(SpriteManager spriteManager, PlayerManager.PlayerStat playerStat) {
+    TopThreePanelParent(SpriteManager spriteManager, PlayerManager.PlayerStat playerStat, List<Map.Entry<HiscoreSkill, Integer>> sorted,  boolean sortByKc) {
 
         setBorder(new EmptyBorder(3, 3, 3, 3));
         setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -37,15 +41,15 @@ public class TopThreePanelParent extends PluginPanel
             HiscoreSkill hiscoreSkill;
             int kc;
 
-            if (playerStat == null || !playerStat.hasFetchedKcs() || playerStat.getSorted().size() <= i) {
+            if (playerStat == null || !playerStat.hasFetchedKcs() || sorted.size() <= i) {
                 hiscoreSkill = null;
                 kc = 0;
             } else {
-                hiscoreSkill = playerStat.getSorted().get(i).getKey();
-                kc = playerStat.getSorted().get(i).getValue();
+                hiscoreSkill = sorted.get(i).getKey();
+                kc = sorted.get(i).getValue();
             }
 
-            JPanel panel = new TopThreePanel(spriteManager, hiscoreSkill, kc);
+            JPanel panel = new TopThreePanel(spriteManager, hiscoreSkill, kc, sortByKc);
             panels.add(panel);
         }
 
@@ -59,7 +63,7 @@ public class TopThreePanelParent extends PluginPanel
 
     private class TopThreePanel extends PluginPanel {
 
-        TopThreePanel(SpriteManager spriteManager, HiscoreSkill hiscoreSkill, Integer kc)
+        TopThreePanel(SpriteManager spriteManager, HiscoreSkill hiscoreSkill, Integer val, boolean sortByKc)
         {
             setBackground(ColorScheme.DARKER_GRAY_COLOR);
 
@@ -74,21 +78,21 @@ public class TopThreePanelParent extends PluginPanel
             GroupLayout layout = new GroupLayout(this);
             this.setLayout(layout);
 
-            String bossName = (hiscoreSkill != null) ? StringUtils.capitalize(hiscoreSkill.getName().toLowerCase()) : "None";
+            String bossName = (hiscoreSkill != null) ? translateName(hiscoreSkill) : "None";
             bossName += (hiscoreSkill != null) ? " (" + PvmScore.FULL_POINT_MAPPINGS.get(hiscoreSkill)
                     + (PvmScore.FULL_POINT_MAPPINGS.get(hiscoreSkill) > 1 ? "pts" : "pt") + ")" : "";
             JLabel boss = new JLabel(bossName);
             boss.setFont(FontManager.getRunescapeBoldFont());
             boss.setForeground(Color.GRAY);
 
-            String kcFormatted = QuantityFormatter.quantityToStackSize(kc);
-            JLabel kcLabel = new JLabel(StringUtils.capitalize(kcFormatted));
+            String kcFormatted = QuantityFormatter.quantityToStackSize(val);
+            JLabel valLabel = new JLabel(StringUtils.capitalize(kcFormatted) + (sortByKc ? " kc" : " pts"));
 
-            kcLabel.setForeground(Color.YELLOW);
+            valLabel.setForeground(Color.YELLOW);
 
-            kcLabel.setFont(FontManager.getRunescapeFont());
-            kcLabel.setToolTipText(NumberFormat.getNumberInstance(Locale.US).format(kc));
-            kcLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            valLabel.setFont(FontManager.getRunescapeFont());
+            valLabel.setToolTipText(NumberFormat.getNumberInstance(Locale.US).format(val));
+            valLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 
             JLabel spriteLabel = new JLabel();
@@ -106,7 +110,7 @@ public class TopThreePanelParent extends PluginPanel
                     .addGroup(layout.createSequentialGroup()
                             .addComponent(spriteLabel)
                             .addComponent(boss)
-                            .addComponent(kcLabel)
+                            .addComponent(valLabel)
                     )
             );
 
@@ -115,7 +119,7 @@ public class TopThreePanelParent extends PluginPanel
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                             .addComponent(spriteLabel)
                             .addComponent(boss)
-                            .addComponent(kcLabel)
+                            .addComponent(valLabel)
                     )
                     .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE) // flexible left gap
             );
