@@ -4,7 +4,7 @@ A Runelite plugin that calculates a score based off of player's bossing Hiscores
 Adds these scores to the player right-click menu, and adds 
 a plugin panel that displays the boss hiscores of the user you have clicked on. 
 
-![image](pvmscore_ex.png)
+![image](pvm-score-sort-search-update.png)
 
 
 The score algorithm will be tweaked based off of feedback.

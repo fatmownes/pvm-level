@@ -110,7 +110,7 @@ public class PvMPluginPanel extends PluginPanel {
         header.add(sort);
 
         initSearchBar();
-        header.add(searchBar);
+//        header.add(searchBar);
 
         setLayout();
     }
@@ -129,6 +129,7 @@ public class PvMPluginPanel extends PluginPanel {
         searchBar.setHoverBackgroundColor(ColorScheme.DARK_GRAY_HOVER_COLOR);
         searchBar.setMinimumSize(new Dimension(0, 30));
         searchBar.addActionListener(e -> {
+            loading(searchBar.getText());
             playerManager.addPlayer(searchBar.getText()).fetchPlayerKC()
                     .whenComplete((r, throwable) ->
                             update(searchBar.getText())
@@ -144,6 +145,7 @@ public class PvMPluginPanel extends PluginPanel {
                     return;
                 }
 
+                loading(searchBar.getText());
                 playerManager.addPlayer(searchBar.getText()).fetchPlayerKC()
                         .whenComplete((r, throwable) -> {
                     update(searchBar.getText());
@@ -157,12 +159,12 @@ public class PvMPluginPanel extends PluginPanel {
             loading = false;
         });
 
-//        add(searchBar, c);
     }
 
     private void setLayout() {
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                        .addComponent(searchBar)
                         .addComponent(header)
                         .addComponent(hardModeRaidsPanel)
                         .addComponent(gmPanel)
@@ -173,6 +175,8 @@ public class PvMPluginPanel extends PluginPanel {
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(searchBar)
+                .addGap(3)
                 .addComponent(header)
                 .addGap(10)
                 .addComponent(gmPanel)
