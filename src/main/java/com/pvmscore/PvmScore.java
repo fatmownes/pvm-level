@@ -48,50 +48,78 @@ public class PvmScore
 
     //5 pts
     public static final List<HiscoreSkill> MASTER_BOSSES = ImmutableList.of(
-            TZTOK_JAD, // being included here because of time? Maybe move up.
-            THE_WHISPERER,
-            DUKE_SUCELLUS,
-            THE_LEVIATHAN,
-            VARDORVIS,
-            YAMA,
             PHOSANIS_NIGHTMARE,
             THE_CORRUPTED_GAUNTLET,
+            YAMA,
             DOOM_OF_MOKHAIOTL,
-            NEX /* This one is tough because of masses? */
+            NEX
     );
 
     //3 pts
     public static final List<HiscoreSkill> ELITE_BOSSES = ImmutableList.of(
+            TZTOK_JAD,
+            THE_WHISPERER,
+            DUKE_SUCELLUS,
+            THE_LEVIATHAN,
+            VARDORVIS,
+            PHANTOM_MUSPAH,
+            ARAXXOR,
+            NIGHTMARE,
+            CORPOREAL_BEAST,
             CALLISTO,
             VENENATIS,
             VETION,
+            SPINDEL,
             THE_GAUNTLET,
-            PHANTOM_MUSPAH,
-            ARAXXOR,
-            NIGHTMARE, /* This one is tough because of masses? */
-            CORPOREAL_BEAST
+            ZULRAH,
+            VORKATH,
+            ALCHEMICAL_HYDRA,
+            CERBERUS,
+            COMMANDER_ZILYANA,
+            GENERAL_GRAARDOR,
+            KREEARRA,
+            KRIL_TSUTSAROTH
     );
 
     //2 pts
     public static final List<HiscoreSkill> HARD_BOSSES = ImmutableList.of(
-            ZULRAH,
-            VORKATH,
-            ALCHEMICAL_HYDRA
+            ABYSSAL_SIRE,
+            ARTIO,
+            CALVARION,
+            DAGANNOTH_PRIME,
+            DAGANNOTH_REX,
+            DAGANNOTH_SUPREME,
+            LUNAR_CHESTS,
+            KALPHITE_QUEEN
     );
+
 
     //1 pt
     public static final List<HiscoreSkill> BOSSES = ImmutableList.of(
-            ABYSSAL_SIRE, AMOXLIATL, ARTIO, BARROWS_CHESTS,
-            BRYOPHYTA, CALVARION, CERBERUS,
-            CHAOS_ELEMENTAL, CHAOS_FANATIC, COMMANDER_ZILYANA, CRAZY_ARCHAEOLOGIST, DAGANNOTH_PRIME,
-            DAGANNOTH_REX, DAGANNOTH_SUPREME, DERANGED_ARCHAEOLOGIST, GENERAL_GRAARDOR,
-            GIANT_MOLE, GROTESQUE_GUARDIANS, HESPORI,
-            KALPHITE_QUEEN, KING_BLACK_DRAGON, KRAKEN,
-            KREEARRA, KRIL_TSUTSAROTH, LUNAR_CHESTS, MIMIC, OBOR,
-            SARACHNIS, SCORPIA, SCURRIUS,
-            SHELLBANE_GRYPHON, SKOTIZO,
-            SPINDEL, TEMPOROSS, THE_HUEYCOATL,
-            THE_ROYAL_TITANS, THERMONUCLEAR_SMOKE_DEVIL, WINTERTODT,
+            AMOXLIATL,
+            BARROWS_CHESTS,
+            BRYOPHYTA,
+            CHAOS_ELEMENTAL,
+            CHAOS_FANATIC,
+            CRAZY_ARCHAEOLOGIST,
+            DERANGED_ARCHAEOLOGIST,
+            GIANT_MOLE,
+            GROTESQUE_GUARDIANS,
+            HESPORI,
+            KING_BLACK_DRAGON,
+            KRAKEN,
+            MIMIC,
+            OBOR,
+            SARACHNIS,
+            SCORPIA,
+            SCURRIUS,
+            SHELLBANE_GRYPHON,
+            SKOTIZO,
+            TEMPOROSS,
+            THE_HUEYCOATL,
+            THE_ROYAL_TITANS,
+            THERMONUCLEAR_SMOKE_DEVIL,
+            WINTERTODT,
             ZALCANO
     );
 
@@ -146,6 +174,5 @@ public class PvmScore
 
         return score.get() / divisor;
     }
-
 
 }
