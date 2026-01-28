@@ -11,10 +11,12 @@ import com.pvmscore.panel.PvMPluginPanel;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
+import net.runelite.api.gameval.NpcID;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.events.NpcLootReceived;
+import net.runelite.client.game.NpcInfo;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreClient;
 import net.runelite.client.menus.MenuManager;
@@ -232,6 +234,12 @@ public class PvmScorePlugin extends Plugin
 		updateWorldPlayersState();
 
 		if (pvmScoreConfig.enablePointDrop()) {
+			notifyKillHelper(client.getTopLevelWorldView()
+					.npcs()
+					.stream()
+					.filter(Actor::isDead)
+					.collect(Collectors.toSet()));
+			//TODO
 			handleNpc();
 		}
 	}
@@ -257,6 +265,14 @@ public class PvmScorePlugin extends Plugin
 		}
 		previousPlayerSet = curr;
 		playerManager.processLookups();
+	}
+
+	private void notifyKillHelper(Set<NPC> npcs) {
+
+		npcs.forEach(npc -> {
+
+		});
+
 	}
 
 	@Subscribe
