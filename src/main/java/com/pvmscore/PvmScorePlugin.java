@@ -19,6 +19,7 @@ import net.runelite.client.events.NpcLootReceived;
 import net.runelite.client.game.NpcInfo;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreClient;
+import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -31,6 +32,7 @@ import net.runelite.client.util.Text;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -108,6 +110,7 @@ public class PvmScorePlugin extends Plugin
 
 		overlayManager.add(bossPointsOverlay);
 		clientToolbar.addNavigation(navButton);
+		PvmScore pvmScore = new PvmScore(); // initialize static stuff
 	}
 
 	@Override
@@ -268,17 +271,20 @@ public class PvmScorePlugin extends Plugin
 	}
 
 	private void notifyKillHelper(Set<NPC> npcs) {
-
 		npcs.forEach(npc -> {
+			if (PvmScore.NPC_ID_TO_BOSS.containsKey(npc.getId())) {
+				HiscoreSkill dead = PvmScore.NPC_ID_TO_BOSS.get(npc.getId());
 
+				Integer points = PvmScore.FULL_POINT_MAPPINGS.get(dead);
+				notifyKill(points);
+			}
 		});
-
 	}
 
-	@Subscribe
-	public void onNpcLootReceived(NpcLootReceived event)
+
+	public void notifyKill(int points)
 	{
-		bossPointsOverlay.notifyKill(event.getNpc());
+		bossPointsOverlay.notifyKill(points);
 		tickCount = 0;
 	}
 

@@ -22,7 +22,6 @@ public class BossPointsOverlay extends Overlay {
     private int yOffset = 0;  // Track vertical offset
     private static final int MOVE_SPEED = 2;  // Pixels to move up per render
 
-    private final boolean testing = false;
     private final Client client;
 
     public BossPointsOverlay(Client client) {
@@ -53,32 +52,10 @@ public class BossPointsOverlay extends Overlay {
 
     public void notifyNotKill() {
         points = -1;
+        yOffset = 0;
     }
 
-    public void notifyKill(NPC npc) {
-        AtomicInteger pts = new AtomicInteger(-1);
-        AtomicBoolean found = new AtomicBoolean(false);
-
-        if (testing) {
-            points = 1;
-            yOffset = 0;  // Reset offset on new kill
-            return;
-        }
-
-        for (List<HiscoreSkill> bosses: PvmScore.ALL) {
-            bosses.forEach(boss -> {
-                if (boss.getName().equals(npc.getName())) {
-                    pts.set(PvmScore.FULL_POINT_MAPPINGS.get(boss));
-                    found.set(true);
-                }
-            });
-
-            if (found.get()) {
-                break;
-            }
-        }
-
-        points = pts.get();
-        yOffset = 0;  // Reset offset on new kill
+    public void notifyKill(int points) {
+        this.points = points;
     }
 }
