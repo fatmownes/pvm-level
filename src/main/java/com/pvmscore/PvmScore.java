@@ -215,13 +215,13 @@ public class PvmScore
                 Map.entry(NpcID.DAGCAVE_MAGIC_BOSS, HiscoreSkill.DAGANNOTH_PRIME),
                 Map.entry(NpcID.DAGCAVE_MELEE_BOSS, HiscoreSkill.DAGANNOTH_REX),
                 Map.entry(NpcID.DAGCAVE_RANGED_BOSS, HiscoreSkill.DAGANNOTH_SUPREME),
-                Map.entry(-1, HiscoreSkill.LUNAR_CHESTS), // TODO not sure how we do this yet, perhaps we will do something custom with chest opening
+                Map.entry(-1, HiscoreSkill.LUNAR_CHESTS), // done via interfaces.
                 Map.entry(NpcID.SWAN_KALPHITE_2, HiscoreSkill.KALPHITE_QUEEN), // 1
                 Map.entry(NpcID.KALPHITE_FLYINGQUEEN, HiscoreSkill.KALPHITE_QUEEN), // 2
 
                 // EASY BOSSES
                 Map.entry(NpcID.AMOXLIATL, HiscoreSkill.AMOXLIATL),
-                Map.entry(-2, HiscoreSkill.BARROWS_CHESTS), // TODO not sure how we do this yet, perhaps we will do something custom with chest opening
+                Map.entry(-2, HiscoreSkill.BARROWS_CHESTS), // done via interfaces.
                 Map.entry(NpcID.GB_MOSSGIANT, HiscoreSkill.BRYOPHYTA),
                 Map.entry(NpcID.CHAOSELEMENTAL, HiscoreSkill.CHAOS_ELEMENTAL),
                 Map.entry(NpcID.CHAOS_FANATIC, HiscoreSkill.CHAOS_FANATIC),

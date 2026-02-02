@@ -11,11 +11,13 @@ import com.pvmscore.panel.PvMPluginPanel;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
+import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.NpcID;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.events.NpcLootReceived;
+import net.runelite.client.events.ServerNpcLoot;
 import net.runelite.client.game.NpcInfo;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.hiscore.HiscoreClient;
@@ -23,6 +25,7 @@ import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.menus.MenuManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.loottracker.PluginLootReceived;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -87,9 +90,6 @@ public class PvmScorePlugin extends Plugin
 	public static final String ORANGE = "ff9040";
 
 	private int tickCount = -1;
-
-	private HiscoreSkill currentlyDyingNpc;
-	private HiscoreSkill previouslyDyingNpc;
 
 	@Override
 	protected void startUp() throws Exception
@@ -275,8 +275,6 @@ public class PvmScorePlugin extends Plugin
 	}
 
 	private void notifyKillHelper(Set<NPC> npcs) {
-
-
 		npcs.forEach(npc -> {
 			if (PvmScore.NPC_ID_TO_BOSS.containsKey(npc.getId())) {
 				HiscoreSkill dead = PvmScore.NPC_ID_TO_BOSS.get(npc.getId());
@@ -302,6 +300,20 @@ public class PvmScorePlugin extends Plugin
 				tickCount = -1;
 			}
 
+		}
+	}
+
+	@Subscribe
+	public void onWidgetLoaded(WidgetLoaded widgetLoaded) {
+		switch (widgetLoaded.getGroupId()) {
+			case InterfaceID.BARROWS_REWARD:
+				bossPointsOverlay.notifyKill(PvmScore.FULL_POINT_MAPPINGS.get(HiscoreSkill.BARROWS_CHESTS));
+				tickCount = 0;
+				break;
+			case InterfaceID.PMOON_REWARD:
+				bossPointsOverlay.notifyKill(PvmScore.FULL_POINT_MAPPINGS.get(HiscoreSkill.LUNAR_CHESTS));
+				tickCount = 0;
+				break;
 		}
 	}
 
