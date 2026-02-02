@@ -88,6 +88,9 @@ public class PvmScorePlugin extends Plugin
 
 	private int tickCount = -1;
 
+	private HiscoreSkill currentlyDyingNpc;
+	private HiscoreSkill previouslyDyingNpc;
+
 	@Override
 	protected void startUp() throws Exception
 	{
@@ -237,13 +240,14 @@ public class PvmScorePlugin extends Plugin
 		updateWorldPlayersState();
 
 		if (pvmScoreConfig.enablePointDrop()) {
+
 			notifyKillHelper(client.getTopLevelWorldView()
 					.npcs()
 					.stream()
 					.filter(Actor::isDead)
 					.collect(Collectors.toSet()));
-			//TODO
-			handleNpc();
+
+			notifyNotKillHelper();
 		}
 	}
 
@@ -271,32 +275,33 @@ public class PvmScorePlugin extends Plugin
 	}
 
 	private void notifyKillHelper(Set<NPC> npcs) {
+
+
 		npcs.forEach(npc -> {
 			if (PvmScore.NPC_ID_TO_BOSS.containsKey(npc.getId())) {
 				HiscoreSkill dead = PvmScore.NPC_ID_TO_BOSS.get(npc.getId());
-
-				Integer points = PvmScore.FULL_POINT_MAPPINGS.get(dead);
-				notifyKill(points);
+				if (tickCount == -1) {
+					Integer points = PvmScore.FULL_POINT_MAPPINGS.get(dead);
+					bossPointsOverlay.notifyKill(points);
+					tickCount = 0; //setting to 0 indicates to notifyNotKillHelper to start counting ticks
+				}
 			}
 		});
 	}
 
-
-	public void notifyKill(int points)
-	{
-		bossPointsOverlay.notifyKill(points);
-		tickCount = 0;
-	}
-
-
-	private void handleNpc() {
+	private void notifyNotKillHelper() {
 		if (tickCount >= 0) {
 			tickCount++;
 
-			if (tickCount >= 3) {
+			if (tickCount >= 5) {
 				bossPointsOverlay.notifyNotKill();
+			}
+
+			if (tickCount >= 10) { // 10 is arbitrary. We just want this to be greater than any daeth animations.
+				bossPointsOverlay.notifyNotKill(); // cant hurt
 				tickCount = -1;
 			}
+
 		}
 	}
 
