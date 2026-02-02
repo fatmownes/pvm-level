@@ -179,7 +179,7 @@ public class PvmScore
                 Map.entry(NpcID.YAMA, HiscoreSkill.YAMA),
                 Map.entry(NpcID.DOM_BOSS, HiscoreSkill.DOOM_OF_MOKHAIOTL), // 1
                 Map.entry(NpcID.DOM_BOSS_SHIELDED, HiscoreSkill.DOOM_OF_MOKHAIOTL), //2
-                Map.entry(NpcID.NEX_DYING, NEX), // TODO i want to test this fr
+                Map.entry(NpcID.NEX_DYING, NEX),
 
                 // ELITE BOSSES
                 Map.entry(NpcID.TZHAAR_FIGHTCAVE_SWARM_BOSS, HiscoreSkill.TZTOK_JAD),
@@ -241,11 +241,10 @@ public class PvmScore
                 Map.entry(NpcID.GRYPHON_BOSS, HiscoreSkill.SHELLBANE_GRYPHON),
                 Map.entry(NpcID.CATA_BOSS, HiscoreSkill.SKOTIZO),
                 Map.entry(NpcID.TEMPOROSS_BOSS_ENRAGED, HiscoreSkill.TEMPOROSS),
-                Map.entry(NpcID.HUEY_HEAD_ENRAGED, HiscoreSkill.THE_HUEYCOATL), // TODO, test
+                Map.entry(NpcID.HUEY_HEAD_ENRAGED, HiscoreSkill.THE_HUEYCOATL),
                 Map.entry(NpcID.RT_FIRE_QUEEN, HiscoreSkill.THE_ROYAL_TITANS), // TODO this will be bugged and we will see the drop twice.
                 Map.entry(NpcID.RT_ICE_KING, HiscoreSkill.THE_ROYAL_TITANS), // TODO this will be bugged and we will see the drop twice.
                 Map.entry(NpcID.SMOKE_DEVIL_BOSS, HiscoreSkill.THERMONUCLEAR_SMOKE_DEVIL),
-//            Map.entry(-3, HiscoreSkill.WINTERTODT), // I dont think this is possible, straight up
                 Map.entry(NpcID.ZALCANO_WEAK, HiscoreSkill.ZALCANO)
         );
     }
