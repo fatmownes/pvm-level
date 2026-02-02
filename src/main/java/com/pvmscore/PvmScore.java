@@ -157,7 +157,7 @@ public class PvmScore
         NPC_ID_TO_BOSS = Map.<Integer, HiscoreSkill>ofEntries(
 
                 //TESTING
-//                Map.entry(NpcID.IMP, HiscoreSkill.TZKAL_ZUK),
+//                Map.entry(NpcID.IMP, BARROWS_CHESTS),
 
                 // GRAND MASTER BOSSES
                 Map.entry(NpcID.INFERNO_TZKALZUK_PLACEHOLDER, HiscoreSkill.TZKAL_ZUK), // Unsure

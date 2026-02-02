@@ -13,6 +13,7 @@ import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.NpcID;
+import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -39,6 +40,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import static net.runelite.api.ScriptID.XPDROPS_SETDROPSIZE;
 
 @Slf4j
 @PluginDescriptor(
@@ -109,7 +112,7 @@ public class PvmScorePlugin extends Plugin
 				.panel(pvmPluginPanel)
 				.build();
 
-		bossPointsOverlay = new BossPointsOverlay(client);
+		bossPointsOverlay = new BossPointsOverlay(client, spriteManager);
 
 		overlayManager.add(bossPointsOverlay);
 		clientToolbar.addNavigation(navButton);
@@ -279,8 +282,7 @@ public class PvmScorePlugin extends Plugin
 			if (PvmScore.NPC_ID_TO_BOSS.containsKey(npc.getId())) {
 				HiscoreSkill dead = PvmScore.NPC_ID_TO_BOSS.get(npc.getId());
 				if (tickCount == -1) {
-					Integer points = PvmScore.FULL_POINT_MAPPINGS.get(dead);
-					bossPointsOverlay.notifyKill(points);
+					bossPointsOverlay.notifyKill(dead);
 					tickCount = 0; //setting to 0 indicates to notifyNotKillHelper to start counting ticks
 				}
 			}
@@ -307,11 +309,11 @@ public class PvmScorePlugin extends Plugin
 	public void onWidgetLoaded(WidgetLoaded widgetLoaded) {
 		switch (widgetLoaded.getGroupId()) {
 			case InterfaceID.BARROWS_REWARD:
-				bossPointsOverlay.notifyKill(PvmScore.FULL_POINT_MAPPINGS.get(HiscoreSkill.BARROWS_CHESTS));
+				bossPointsOverlay.notifyKill(HiscoreSkill.BARROWS_CHESTS);
 				tickCount = 0;
 				break;
 			case InterfaceID.PMOON_REWARD:
-				bossPointsOverlay.notifyKill(PvmScore.FULL_POINT_MAPPINGS.get(HiscoreSkill.LUNAR_CHESTS));
+				bossPointsOverlay.notifyKill(HiscoreSkill.LUNAR_CHESTS);
 				tickCount = 0;
 				break;
 		}

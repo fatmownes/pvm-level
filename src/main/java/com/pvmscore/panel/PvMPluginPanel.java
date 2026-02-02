@@ -221,9 +221,7 @@ public class PvMPluginPanel extends PluginPanel {
         {
             playerStat = playerManager.getPlayer(playerName);
 
-            if (currentPlayer == null || !currentPlayer.equals(playerStat)) {
-                currentPlayer = playerStat;
-            }
+            currentPlayer = playerStat;
 
             this.header.nameLabel.setText("Player: " + playerName);
             this.header.scoreLabel.setText("Score: " + currentPlayer.getLevel());
