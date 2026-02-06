@@ -98,12 +98,25 @@ public class PlayerManager {
 
 
     public void processLookups() {
-        if (this.kcLookupQueue.isEmpty()) {
-            return;
-        }
 
-        PlayerStat ps = this.kcLookupQueue.poll();
-        executor.submit(ps::fetchPlayerKC);
+        try {
+            if (this.kcLookupQueue.isEmpty()) {
+                return;
+            }
+
+            PlayerStat ps = this.kcLookupQueue.poll();
+            executor.submit(() -> {
+
+                try {
+                    ps.fetchPlayerKC();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -135,7 +148,7 @@ public class PlayerManager {
             this.killCounts.put(boss, kc);
         }
 
-        public List<Map.Entry<HiscoreSkill, Integer>> getSortedByScore() {
+        synchronized public List<Map.Entry<HiscoreSkill, Integer>> getSortedByScore() {
             if (!hasFetchedKcs) {
                 kcLookupQueue.offer(this);
                 return Collections.EMPTY_LIST;
@@ -161,7 +174,7 @@ public class PlayerManager {
             return sortedByScore;
         }
 
-        public List<Map.Entry<HiscoreSkill, Integer>> getSortedByKC() {
+        synchronized public List<Map.Entry<HiscoreSkill, Integer>> getSortedByKC() {
 
             if (!hasFetchedKcs) {
                 kcLookupQueue.offer(this);

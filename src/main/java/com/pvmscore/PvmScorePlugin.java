@@ -94,6 +94,8 @@ public class PvmScorePlugin extends Plugin
 
 	private int tickCount = -1;
 
+	int lastSeenNpcId = 1;
+
 	@Override
 	protected void startUp() throws Exception
 	{
@@ -263,7 +265,7 @@ public class PvmScorePlugin extends Plugin
 
 		Set<Player> curr = StreamSupport.stream(players.stream().spliterator(), false).collect(Collectors.toSet());
 
-		// this deals with players going away. I'm not super confident this is the best way to do this.
+		// this deals with players going away.
 		if (previousPlayerSet != null) {
 			Set<Player> removed = new HashSet<>(previousPlayerSet);
 			removed.removeAll(curr);
@@ -279,8 +281,9 @@ public class PvmScorePlugin extends Plugin
 
 	private void notifyKillHelper(Set<NPC> npcs) {
 		npcs.forEach(npc -> {
-			if (PvmScore.NPC_ID_TO_BOSS.containsKey(npc.getId())) {
-				HiscoreSkill dead = PvmScore.NPC_ID_TO_BOSS.get(npc.getId());
+			int id = npc.getId();
+			if (PvmScore.NPC_ID_TO_BOSS.containsKey(id)) {
+				HiscoreSkill dead = PvmScore.NPC_ID_TO_BOSS.get(id);
 				if (tickCount == -1) {
 					bossPointsOverlay.notifyKill(dead);
 					tickCount = 0; //setting to 0 indicates to notifyNotKillHelper to start counting ticks
@@ -297,7 +300,7 @@ public class PvmScorePlugin extends Plugin
 				bossPointsOverlay.notifyNotKill();
 			}
 
-			if (tickCount >= 10) { // 10 is arbitrary. We just want this to be greater than any daeth animations.
+			if (tickCount >= 60) { // 60 is arbitrary. We just want this to be greater than any death animations.
 				bossPointsOverlay.notifyNotKill(); // cant hurt
 				tickCount = -1;
 			}

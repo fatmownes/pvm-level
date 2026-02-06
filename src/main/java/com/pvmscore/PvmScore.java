@@ -157,7 +157,7 @@ public class PvmScore
         NPC_ID_TO_BOSS = Map.<Integer, HiscoreSkill>ofEntries(
 
                 //TESTING
-//                Map.entry(NpcID.IMP, BARROWS_CHESTS),
+//                Map.entry(NpcID.IMP, TZKAL_ZUK),
 
                 // GRAND MASTER BOSSES
                 Map.entry(NpcID.INFERNO_TZKALZUK_PLACEHOLDER, HiscoreSkill.TZKAL_ZUK), // Unsure
@@ -170,12 +170,13 @@ public class PvmScore
 
                 Map.entry(NpcID.OLM_HEAD_SPAWNING, HiscoreSkill.CHAMBERS_OF_XERIC), //unsure if i should be using the other olm head
                 Map.entry(NpcID.VERZIK_PHASE3, HiscoreSkill.THEATRE_OF_BLOOD),
-                Map.entry(NpcID.TOA_WARDEN_TUMEKEN_PHASE3, HiscoreSkill.TOMBS_OF_AMASCUT), // there's also a p3 death NPC... but do those npcs actually ever die?
+                Map.entry(NpcID.TOA_WARDEN_TUMEKEN_PHASE3, HiscoreSkill.TOMBS_OF_AMASCUT), // 1 I dont think this one works.
+                Map.entry(NpcID.TOA_WARDEN_P3_DEATH_TUMEKEN, HiscoreSkill.TOMBS_OF_AMASCUT), // 2
+                Map.entry(NpcID.TOA_WARDEN_P3_DEATH_ELIDINIS, HiscoreSkill.TOMBS_OF_AMASCUT), // 3
 
                 // MASTER BOSSES
-                Map.entry(NpcID.NIGHTMARE_CHALLENGE_WEAK_PHASE_04, HiscoreSkill.PHOSANIS_NIGHTMARE), // my best guess... again this npc has a dead npcID
-                Map.entry(NpcID.CRYSTAL_HUNLLEF_MAGIC_HM, HiscoreSkill.THE_CORRUPTED_GAUNTLET), // 1
-                Map.entry(NpcID.CRYSTAL_HUNLLEF_RANGED_HM, HiscoreSkill.THE_CORRUPTED_GAUNTLET), // 2
+                Map.entry(NpcID.NIGHTMARE_CHALLENGE_DYING, HiscoreSkill.PHOSANIS_NIGHTMARE),
+                Map.entry(NpcID.CRYSTAL_HUNLLEF_DEATH_HM, HiscoreSkill.THE_CORRUPTED_GAUNTLET), // 1
                 Map.entry(NpcID.YAMA, HiscoreSkill.YAMA),
                 Map.entry(NpcID.DOM_BOSS, HiscoreSkill.DOOM_OF_MOKHAIOTL), // 1
                 Map.entry(NpcID.DOM_BOSS_SHIELDED, HiscoreSkill.DOOM_OF_MOKHAIOTL), //2
@@ -189,13 +190,12 @@ public class PvmScore
                 Map.entry(NpcID.VARDORVIS, HiscoreSkill.VARDORVIS),
                 Map.entry(NpcID.MUSPAH_FINAL, HiscoreSkill.PHANTOM_MUSPAH),
                 Map.entry(NpcID.ARAXXOR, HiscoreSkill.ARAXXOR),
-                Map.entry(NpcID.NIGHTMARE_WEAK_PHASE_03, HiscoreSkill.NIGHTMARE),
+                Map.entry(NpcID.NIGHTMARE_DYING, HiscoreSkill.NIGHTMARE),
                 Map.entry(NpcID.CORP_BEAST, HiscoreSkill.CORPOREAL_BEAST),
                 Map.entry(NpcID.CALLISTO, HiscoreSkill.CALLISTO),
                 Map.entry(NpcID.VENENATIS, HiscoreSkill.VENENATIS),
                 Map.entry(NpcID.VETION, HiscoreSkill.VETION),
-                Map.entry(NpcID.CRYSTAL_HUNLLEF_MAGIC, HiscoreSkill.THE_GAUNTLET),
-                Map.entry(NpcID.CRYSTAL_HUNLLEF_RANGED, HiscoreSkill.THE_GAUNTLET),
+                Map.entry(NpcID.CRYSTAL_HUNLLEF_DEATH, HiscoreSkill.THE_GAUNTLET),
                 Map.entry(NpcID.SNAKEBOSS_BOSS_MELEE, HiscoreSkill.ZULRAH),
                 Map.entry(NpcID.SNAKEBOSS_BOSS_MAGIC, HiscoreSkill.ZULRAH),
                 Map.entry(NpcID.SNAKEBOSS_BOSS_RANGED, HiscoreSkill.ZULRAH),
@@ -241,7 +241,7 @@ public class PvmScore
                 Map.entry(NpcID.GRYPHON_BOSS, HiscoreSkill.SHELLBANE_GRYPHON),
                 Map.entry(NpcID.CATA_BOSS, HiscoreSkill.SKOTIZO),
                 Map.entry(NpcID.TEMPOROSS_BOSS_ENRAGED, HiscoreSkill.TEMPOROSS),
-                Map.entry(NpcID.HUEY_HEAD_ENRAGED, HiscoreSkill.THE_HUEYCOATL),
+                Map.entry(NpcID.HUEY_HEAD_DEFEATED, HiscoreSkill.THE_HUEYCOATL),
                 Map.entry(NpcID.RT_FIRE_QUEEN, HiscoreSkill.THE_ROYAL_TITANS), // TODO this will be bugged and we will see the drop twice.
                 Map.entry(NpcID.RT_ICE_KING, HiscoreSkill.THE_ROYAL_TITANS), // TODO this will be bugged and we will see the drop twice.
                 Map.entry(NpcID.SMOKE_DEVIL_BOSS, HiscoreSkill.THERMONUCLEAR_SMOKE_DEVIL),
