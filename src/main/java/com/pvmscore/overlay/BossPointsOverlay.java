@@ -44,13 +44,10 @@ public class BossPointsOverlay extends Overlay {
 
         String text = String.format("%d", points);
 
-//        Point textLocation = client.getLocalPlayer()
-//                .getCanvasTextLocation(graphics, text, client.getLocalPlayer().getLogicalHeight() + 100 + yOffset);
+        client.getCanvas().layout();
 
         int y = (int) (client.getCanvasHeight() - (client.getCanvasHeight() * .75));
-        int x = (int) (client.getCanvasWidth() - (client.getCanvasWidth() * .25)); //TODO hehe doesnt work at all
-
-
+        int x = (int) (client.getCanvasWidth() - (client.getCanvasWidth() * .45));
 
         spriteManager.getSpriteAsync(currentKill == null ? SpriteID.SideIcons.COMBAT : currentKill.getSpriteId(), 0,
         (sprite) -> {
