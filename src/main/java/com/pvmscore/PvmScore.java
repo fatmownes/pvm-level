@@ -126,6 +126,10 @@ public class PvmScore
             ZALCANO
     );
 
+    public static final List<HiscoreSkill> ARE_YOU_FOR_REAL_BOSSES = ImmutableList.of(
+        BRUTUS
+    );
+
     private static final Map<List<HiscoreSkill>, Integer> BOSS_LIST_TO_POINT_MAP =
             Map.of(GRAND_MASTER_BOSSES, GRAND_MASTER_POINTS,
                     HARD_MODE_RAIDS, HARD_MODE_RAIDS_POINTS,
@@ -133,7 +137,8 @@ public class PvmScore
                     MASTER_BOSSES, MASTER_POINTS,
                     ELITE_BOSSES, ELITE_POINTS,
                     HARD_BOSSES, HARD_POINTS,
-                    EASY_BOSSES, DEFAULT_POINTS
+                    EASY_BOSSES,  DEFAULT_POINTS,
+                    ARE_YOU_FOR_REAL_BOSSES, 0
             );
 
     public static final List<List<HiscoreSkill>> ALL = List.of(
