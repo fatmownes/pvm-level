@@ -55,7 +55,8 @@ public class PvmScore
             THE_CORRUPTED_GAUNTLET,
             YAMA,
             DOOM_OF_MOKHAIOTL,
-            NEX
+            NEX,
+            MAGGOT_KING
     );
 
     //3 pts
@@ -186,6 +187,7 @@ public class PvmScore
                 Map.entry(NpcID.DOM_BOSS, HiscoreSkill.DOOM_OF_MOKHAIOTL), // 1
                 Map.entry(NpcID.DOM_BOSS_SHIELDED, HiscoreSkill.DOOM_OF_MOKHAIOTL), //2
                 Map.entry(NpcID.NEX_DYING, NEX),
+                Map.entry(NpcID.MAGGOT_KING, MAGGOT_KING),
 
                 // ELITE BOSSES
                 Map.entry(NpcID.TZHAAR_FIGHTCAVE_SWARM_BOSS, HiscoreSkill.TZTOK_JAD),
